@@ -32,11 +32,15 @@ gráficos con un aviso).
 
 ```python
 from editoria.graphics import (
-    PlaywrightGraphicsRenderer,   # implementa contracts.GraphicsRenderer
-    render_plan_graphics,         # (ctx, version) -> list[OverlayClip]
-    list_templates,               # -> list[TemplateMeta]
-    preview_template, load_template,
-    GraphicsError, GraphicsParamsError, GraphicsUnavailable, TemplateNotFound,
+    PlaywrightGraphicsRenderer,  # implementa contracts.GraphicsRenderer
+    render_plan_graphics,  # (ctx, version) -> list[OverlayClip]
+    list_templates,  # -> list[TemplateMeta]
+    preview_template,
+    load_template,
+    GraphicsError,
+    GraphicsParamsError,
+    GraphicsUnavailable,
+    TemplateNotFound,
 )
 ```
 
