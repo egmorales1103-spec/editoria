@@ -27,6 +27,7 @@ def register(app: typer.Typer) -> None:
         """Borrador automático del plan para un estilo."""
         from editoria.planning.draft import draft_plan, parse_window
         from editoria.policy import has_errors, lint_plan, print_findings
+        from editoria.policy.immutable import ImmutableTargetError, ensure_writable_path
         from editoria.schemas import write_model
 
         ctx = open_project(slug)
@@ -40,6 +41,10 @@ def register(app: typer.Typer) -> None:
         except (FileNotFoundError, ValueError) as exc:
             fail(str(exc))
         target = out or ctx.proposals_dir / f"plan_{sid}.yaml"
+        try:  # never inside a delivered version or 00_original/
+            ensure_writable_path(target)
+        except ImmutableTargetError as exc:
+            fail(str(exc))
         write_model(target, plan)
         ok(f"Borrador del estilo {sid} escrito en {target}")
         findings = lint_plan(plan, ctx)
