@@ -10,6 +10,11 @@ tests/.fixtures/
 
 # Entorno y estado local
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+CLAUDE.local.md
 .dev/
 .venv/
 .claude/settings.local.json
@@ -33,5 +38,11 @@ htmlcov/
 *.mp3
 *.m4a
 *.gif
+*.jpg
+*.jpeg
+*.png
+*.avi
+*.m4v
 !assets/sfx/*.wav
+!templates/graphics/*/preview.png
 !docs/img/**

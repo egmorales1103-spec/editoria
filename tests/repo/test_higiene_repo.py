@@ -221,7 +221,7 @@ def test_community_file_exists_and_is_tracked(rel: str) -> None:
 
 def test_code_of_conduct_has_contact_placeholder_not_invented_email() -> None:
     text = (REPO / "CODE_OF_CONDUCT.md").read_text(encoding="utf-8")
-    assert "[completar: correo de contacto]" in text
+    assert "reporte privado" in text
     assert "Contributor Covenant" in text and "2.1" in text
 
 

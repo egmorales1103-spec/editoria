@@ -24,8 +24,7 @@ from editoria.schemas import (
 from editoria.util import ffmpeg, log
 from editoria.util.cli import fail, open_project
 from editoria.util.ffmpeg import command_log
-from editoria.util.files import fmt_ts, read_csv_rows, write_csv_rows
-from editoria.util.log import read_jsonl
+from editoria.util.files import fmt_ts, read_csv_rows, sha256_file, write_csv_rows
 from editoria.util.project import (
     DELIVERED_MARKER,
     PLAN_FILE,
@@ -167,6 +166,11 @@ def deliver(ctx: ProjectContext, version: str, force: bool = False) -> Path:
     if not qc_path.exists():
         raise DeliveryError(f"Falta el QC de {version}. Ejecutá 'editoria qc' antes de entregar.")
     qc = read_model(qc_path, QCReport)
+    if qc.video_sha256 and qc.video_sha256 != sha256_file(video):
+        raise DeliveryError(
+            f"El QC de {version} corresponde a otro video.mp4 (se volvió a renderizar después). "
+            "Ejecutá 'editoria qc' de nuevo antes de entregar."
+        )
     if qc.has_fail and not force:
         raise DeliveryError(f"El QC de {version} tiene FAIL. Corregí o usá --forzar.")
     plan = read_model(vdir / PLAN_FILE, EditPlan)
@@ -240,17 +244,31 @@ def deliver(ctx: ProjectContext, version: str, force: bool = False) -> Path:
 
         inv.pending.extend(json.loads(render_json.read_text(encoding="utf-8")).get("pending", []))
 
-    credits = read_jsonl(ctx.credits_log)
-    spent = sum(float(c.get("amount", 0) or 0) for c in credits)
+    from editoria.shots import budget_status
+
+    status = budget_status(ctx)  # same total the budget guard uses (max of ledger and yaml)
+    spent = status.spent
     cfg = ctx.load_config()
+    duration_ok = any(c.id == "duration" and c.status == "PASS" for c in qc.checks)
+    duration_note = "igual al VIDEO_BASE" if duration_ok else "SIN confirmar por el QC"
+    fails = [c for c in qc.checks if c.status == "FAIL"]
 
     counts = qc.counts()
     lines = [
         f"# Resumen de entrega — {version}",
         "",
         f"Proyecto `{ctx.slug}` · estilo {plan.style} · duración {fmt_ts(probe.duration_s)} "
-        f"(igual al VIDEO_BASE) · {plan.canvas.width}×{plan.canvas.height}.",
+        f"({duration_note}) · {plan.canvas.width}×{plan.canvas.height}.",
         "",
+        *(
+            [
+                "> **Entregada con --forzar pese a FAIL en el QC:** "
+                + "; ".join(f"{c.id} ({c.detail})" for c in fails),
+                "",
+            ]
+            if fails
+            else []
+        ),
         "## Archivos entregados (verificados)",
         "",
         *[f"- {label}: `{path}`" for label, path in inv.delivered],

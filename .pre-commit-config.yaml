@@ -16,7 +16,7 @@ repos:
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        exclude: ^(uv\.lock|schemas/json/.*)$
+        exclude: ^(uv\.lock|schemas/json/.*|assets/sfx/manifest\.yaml)$
   - repo: local
     hooks:
       # Bloquea medios (mp4, mov, gif, jpg, png...) fuera de las rutas permitidas.

@@ -7,8 +7,8 @@ was already rendered/delivered (P20). `run` always stops after V1 (§11 of the p
 
 from __future__ import annotations
 
+import contextlib
 import json
-import shutil
 from dataclasses import dataclass, field
 from fractions import Fraction
 from pathlib import Path
@@ -36,7 +36,7 @@ from editoria.util.cli import fail, open_project
 from editoria.util.ffmpeg import command_log
 from editoria.util.ffmpeg import run as ffmpeg_run
 from editoria.util.files import fmt_ts
-from editoria.util.geometry import base_transform, zone_box
+from editoria.util.geometry import base_transform
 from editoria.util.project import (
     PLAN_FILE,
     PROBE_FILE,
@@ -45,11 +45,10 @@ from editoria.util.project import (
     VIDEO_FILE,
     ProjectContext,
 )
-from editoria.util.resources import emoji_path, fonts_dir
+from editoria.util.resources import emoji_path, font_family_dir
 
 STYLES: tuple[str, ...] = ("A", "B", "C")
 STYLE_NAMES = {"A": "Claridad profesional", "B": "Explicación visual", "C": "Ritmo y personalidad"}
-EMOJI_SIZE = 200
 SAMPLE_MIN_S, SAMPLE_MAX_S = 5.0, 10.0
 FEEDBACK_QUESTION = (
     "¿Qué querés ajustar en las tomas, el ritmo, los subtítulos, los gráficos o el sonido? "
@@ -118,31 +117,15 @@ def face_box_canvas(ctx: ProjectContext, plan: EditPlan, probe: ProbeResult) -> 
 
 
 def emoji_overlays(plan: EditPlan) -> tuple[list[OverlayClip], list[str]]:
-    """Emoji items -> GIF overlays. Missing GIFs are skipped with a warning."""
-    clips: list[OverlayClip] = []
-    missing: list[str] = []
-    for item in plan.graphics:
-        if not item.is_emoji:
-            continue
-        gif = emoji_path(str(item.emoji))
-        if not gif.exists():
-            missing.append(f"{item.id}: falta {gif.name} (ejecutá scripts/fetch_assets.py)")
-            continue
-        box = zone_box(item.zone, plan.canvas, EMOJI_SIZE, EMOJI_SIZE)
-        clips.append(
-            OverlayClip(
-                id=item.id,
-                frames_pattern=gif,
-                x=box.x,
-                y=box.y,
-                w=box.w,
-                h=box.h,
-                start=item.in_,
-                end=item.out,
-                is_gif=True,
-            )
-        )
-    return clips, missing
+    """Emoji items -> GIF overlays (geometry from render.inputs). Missing GIFs are reported."""
+    from editoria.render.inputs import emoji_overlays as _render_emojis
+
+    missing = [
+        f"{g.id}: falta {emoji_path(str(g.emoji)).name} (ejecutá scripts/fetch_assets.py)"
+        for g in plan.graphics
+        if g.is_emoji and not emoji_path(str(g.emoji)).exists()
+    ]
+    return _render_emojis(plan, set(), plan.canvas), missing
 
 
 @dataclass
@@ -174,11 +157,15 @@ def _lint(plan: EditPlan, ctx: ProjectContext) -> list[Finding]:
 
 
 def write_overlays(path: Path, items: list[OverlayClip]) -> None:
+    """overlays.json with frame paths relative to its folder (the project stays movable)."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps({"overlays": [to_data(o) for o in items]}, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
+    rows = []
+    for o in items:
+        data = to_data(o)
+        with contextlib.suppress(ValueError):
+            data["frames_pattern"] = o.frames_pattern.relative_to(path.parent).as_posix()
+        rows.append(data)
+    path.write_text(json.dumps({"overlays": rows}, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def build_inputs(
@@ -188,6 +175,7 @@ def build_inputs(
     (graphics engine, missing emoji) degrade to warnings recorded as pending."""
     from editoria.audio import FFmpegAudioMixer
     from editoria.captions import AssCaptionBuilder
+    from editoria.captions.layout import face_avoid_boxes
     from editoria.shots import ProjectShotLibrary
 
     rep = BuildReport()
@@ -196,18 +184,21 @@ def build_inputs(
     fps: Fraction = plan.canvas.resolve_fps(probe.fps)
     face = face_box_canvas(ctx, plan, probe)
     work.mkdir(parents=True, exist_ok=True)
+    # libass scans fontsdir non-recursively: one helper resolves it for every render path.
+    font_family = ctx.load_style(plan.captions.style).captions.font
+    fonts = font_family_dir(font_family) or font_family_dir(brand.fonts.body)
 
     # 1. captions
     if plan.captions.enabled:
         cap_style = ctx.load_style(plan.captions.style)
         cuts = ctx.load_cuts()
-        builder = AssCaptionBuilder()
+        builder = AssCaptionBuilder(fonts_dir=fonts)
         rep.captions = builder.build(
             ctx.load_transcript(),
             cap_style,
             brand,
             plan.canvas,
-            [face] if face else [],
+            face_avoid_boxes(ctx.load_face(), plan.canvas, plan.video),
             plan.captions.emphasis,
             work,
             cuts=cuts.cuts if cuts else (),
@@ -229,16 +220,22 @@ def build_inputs(
         try:
             from editoria.graphics import PlaywrightGraphicsRenderer
 
-            renderer = PlaywrightGraphicsRenderer()
-            for item in template_items:
-                rep.overlays.append(
-                    renderer.render(item, brand, plan.canvas, fps, work / "graficos" / item.id)
-                )
-        except Exception as exc:  # engine missing or template failure: degrade, never hide
-            msg = f"Gráficos no renderizados: {exc}"
+            with PlaywrightGraphicsRenderer() as renderer:
+                for item in template_items:
+                    try:  # a failing template only drops that item
+                        rep.overlays.append(
+                            renderer.render(
+                                item, brand, plan.canvas, fps, work / "graficos" / item.id
+                            )
+                        )
+                    except Exception as exc:
+                        msg = f"Gráfico {item.id} ({item.template}) no renderizado: {exc}"
+                        log.warn(msg)
+                        rep.pending.append(msg)
+        except Exception as exc:  # engine missing: degrade, never hide
+            msg = f"Gráficos no renderizados (motor no disponible): {exc}"
             log.warn(msg)
             rep.pending.append(msg)
-            rep.overlays = []
         if rep.overlays:
             write_overlays(work / "graficos" / "overlays.json", rep.overlays)
     emojis, missing = emoji_overlays(plan)
@@ -249,7 +246,7 @@ def build_inputs(
 
     # 3. audio
     if probe.has_audio:
-        rep.mix = FFmpegAudioMixer().mix(
+        rep.mix = FFmpegAudioMixer(music_root=ctx.root).mix(
             ctx.original_video(), plan.sfx, plan.music, plan.mix, work / "audio" / "mezcla.wav"
         )
         write_model(work / "audio" / "mezcla.json", rep.mix)
@@ -261,13 +258,9 @@ def build_inputs(
     used = {iv.shot for iv in plan.video if iv.method == "generated" and iv.shot}
     rep.shots = sorted(used & set(shots))
 
-    # libass scans fontsdir non-recursively: point it at the brand font family folder.
-    fd = fonts_dir() / brand.fonts.body
-    if not fd.is_dir():
-        fd = fonts_dir()
     inputs = RenderInputs(
         captions_ass=rep.captions.ass if rep.captions else None,
-        fonts_dir=fd if fd.exists() else None,
+        fonts_dir=fonts,
         overlays=rep.overlays,
         mix_wav=rep.mix.wav if rep.mix else None,
         shots={k: v for k, v in shots.items() if k in used},
@@ -300,10 +293,8 @@ def render_version(
         raise PipelineError(f"Falta {version}/plan.yaml. Creá el plan antes de renderizar.")
     if ctx.is_delivered(version):
         raise PipelineError(f"{version} ya fue entregada y es inmutable. Usá 'version new'.")
-    if (vdir / VIDEO_FILE).exists():
-        raise PipelineError(
-            f"{version} ya tiene video.mp4. Las versiones no se sobrescriben: usá 'version new'."
-        )
+    # A rendered but undelivered version may be re-rendered (the renderer replaces the file
+    # atomically); only delivered versions are immutable (P20).
     plan = read_model(plan_path, EditPlan)
     findings = _lint(plan, ctx)
     for f in findings:
@@ -317,6 +308,12 @@ def render_version(
     inputs, rep = build_inputs(ctx, plan, vdir, style)
     rep.findings = findings
     out = FFmpegRenderer().render(plan, ctx, inputs, vdir / VIDEO_FILE, enc or EncodeSettings())
+    try:  # the QC and the reviewer read the contact sheet
+        from editoria.render import contact_sheet
+
+        contact_sheet(ctx, version, 2.0)
+    except Exception as exc:
+        rep.pending.append(f"Hoja de contactos no generada: {exc}")
     (vdir / "render.json").write_text(
         json.dumps(rep.to_json(), ensure_ascii=False, indent=2), encoding="utf-8"
     )
@@ -370,9 +367,7 @@ def propose(ctx: ProjectContext, window: tuple[float, float] | None = None) -> P
         if has_errors(tools.lint(plan, ctx)):
             pending.append("El borrador no pasa el linter; muestra no renderizada.")
         else:
-            work = out_dir / f"trabajo_{sid}"
-            if work.exists():
-                shutil.rmtree(work)
+            work = out_dir / f"trabajo_{sid}"  # kept between runs: graphics cache lives here
             sample_plan = restrict_to_window(plan, win)
             inputs, rep = build_inputs(ctx, sample_plan, work, style)
             pending.extend(rep.pending)

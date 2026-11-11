@@ -68,7 +68,7 @@ def ensure_budget(ctx: ProjectContext, cost: float) -> None:
         raise BudgetError(
             "No hay un límite de créditos autorizado en proyecto.yaml (budget.limit). "
             "Sin límite no se puede enviar nada que consuma créditos. "
-            "Pedile ese único dato a Gabriel y registralo antes de continuar."
+            "Pedile ese único dato a quien administra el proyecto y registralo antes de continuar."
         )
     if not math.isfinite(cost) or cost < 0:
         raise BudgetError(f"El costo a verificar no es válido: {cost}.")

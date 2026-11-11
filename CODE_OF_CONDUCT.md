@@ -36,7 +36,7 @@ Este Código de Conducta se aplica dentro de todos los espacios de la comunidad,
 
 ## Aplicación
 
-Los casos de comportamiento abusivo, acosador o inaceptable de otro modo pueden ser reportados a los líderes de la comunidad responsables de la aplicación en [completar: correo de contacto]. Todas las quejas serán revisadas e investigadas de manera oportuna y justa.
+Los casos de comportamiento abusivo, acosador o inaceptable de otro modo pueden ser reportados a los líderes de la comunidad responsables de la aplicación mediante el reporte privado del repositorio en GitHub (pestaña *Security* → *Report a vulnerability*), indicando que se trata del código de conducta. Todas las quejas serán revisadas e investigadas de manera oportuna y justa.
 
 Todos los líderes de la comunidad están obligados a respetar la privacidad y la seguridad de quien reporte un incidente.
 

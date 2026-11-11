@@ -47,9 +47,7 @@ Nadie edita fuera de sus rutas. Si un contrato no alcanza: adaptador local + "so
 
 ## Kit de origen (solo lectura)
 
-`C:\dev\editor master solution\Master_Solution_Kit_Edicion_IA\Master_Solution_Kit_Edicion_IA`
-
-Solo se importa lo permitido en la sección 2 del plan. **Nunca** se copian al repo: los videos de referencia (`02_Referencias_Usuario/`), sus fotogramas, `06_Laminas_Visuales/`, `ABRIR_CATALOGO.html`, ni `Inventario_Referencias.json` completo (son material de terceros o datos personales). El historial de git debe quedar limpio.
+El repositorio se armó a partir de un kit privado que **no se versiona** (su ubicación local va en `CLAUDE.local.md`, ignorado por git). Del kit solo se importaron las plantillas de trabajo y el prompt. **Nunca** se copian al repo videos, fotogramas, catálogos ni inventarios de referencias de terceros. El historial de git debe quedar limpio.
 
 ## Prohibiciones (producto)
 

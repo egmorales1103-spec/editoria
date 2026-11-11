@@ -6,12 +6,12 @@ schema: editoria/web@1
 referencias:
   - id: W01
     categoria: Subtítulos
-    url: https://www.kapwing.com/explore/hormozi-style-captions-template
+    url: https://www.kapwing.com/explore/subtitles-template
     relacion: [R03]
     nota: Mayúsculas y énfasis de palabra.
   - id: W02
     categoria: Subtítulos
-    url: https://www.kapwing.com/explore/mr-beast-subtites-template
+    url: https://www.kapwing.com/tools/add-subtitles
     relacion: [R09]
     nota: Subtítulos para preguntas y reacciones.
   - id: W03

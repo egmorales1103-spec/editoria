@@ -12,8 +12,8 @@ Lista de enlaces curados que acompañan a los estilos de EditorIA. La fuente de 
 
 | ID | Categoría | Referencia | Patrones | Nota |
 |---|---|---|---|---|
-| W01 | Subtítulos | <https://www.kapwing.com/explore/hormozi-style-captions-template> | R03 | Mayúsculas y énfasis de palabra. |
-| W02 | Subtítulos | <https://www.kapwing.com/explore/mr-beast-subtites-template> | R09 | Subtítulos para preguntas y reacciones. |
+| W01 | Subtítulos | <https://www.kapwing.com/explore/subtitles-template> | R03 | Mayúsculas y énfasis de palabra. |
+| W02 | Subtítulos | <https://www.kapwing.com/tools/add-subtitles> | R09 | Subtítulos para preguntas y reacciones. |
 | W03 | Subtítulos | <https://www.kapwing.com/explore/multi-font-subtitles-template> | R05 | Comparar jerarquías y combinaciones tipográficas. |
 | W04 | Tipografía | <https://jitter.video/template/sliding-text-reveal/> | R04, R06 | Entrada de un título por desplazamiento. |
 | W05 | Tipografía | <https://jitter.video/templates/text/> | R04, R05, R06 | Texto elástico, máscaras y títulos. |

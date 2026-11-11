@@ -46,7 +46,7 @@ Licencias propias: código Apache-2.0 (`LICENSE`); prompts, documentación, plan
 | pre-commit | MIT |
 | types-PyYAML, types-jsonschema | Apache-2.0 |
 
-Las dependencias transitivas (por ejemplo click, anyio, h11, httpcore, certifi, markupsafe, referencing, tqdm) mantienen sus propias licencias permisivas; el listado completo está en `uv.lock`.
+Las dependencias transitivas (por ejemplo click, anyio, h11, httpcore, certifi, markupsafe, referencing, tqdm) mantienen sus propias licencias: permisivas (MIT, BSD, Apache-2.0) o MPL-2.0 (certifi, tqdm, pathspec: copyleft a nivel de archivo; se usan sin modificar y no se redistribuyen). El listado completo está en `uv.lock`. Herramienta de build: hatchling (MIT).
 
 ## Modelos de transcripción
 

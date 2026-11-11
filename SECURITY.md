@@ -6,7 +6,7 @@ Mientras el proyecto esté en la serie 0.x, solo se corrige la última versión 
 
 ## Cómo reportar una vulnerabilidad
 
-**No abras un issue público** para reportar un problema de seguridad. Usá el reporte privado de GitHub (pestaña *Security* → *Report a vulnerability*) o escribí a [completar: correo de contacto de seguridad].
+**No abras un issue público** para reportar un problema de seguridad. Usá el reporte privado de GitHub (pestaña *Security* → *Report a vulnerability*). Es el único canal: no publicamos un correo de seguridad.
 
 Incluí, si podés:
 
