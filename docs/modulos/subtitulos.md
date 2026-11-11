@@ -39,9 +39,14 @@ acepta además `cuts=`, `editorial_titles=` y `duration=` como argumentos opcion
   ambos modos.
 - Animación: `pop` = `\t` sobre `\fscx\fscy` (70 % → 110 % → 100 %); `fade` = `\fad`.
 - Mayúsculas según `case` (`upper`, `lower`, `sentence`, `as_is`).
-- Fuente: la del estilo, luego la de la marca; se buscan en `assets/fonts/` (pasar `fontsdir` a
-  libass) y luego en el sistema. Si no está, se usa Arial (Windows/macOS) o DejaVu Sans
+- Fuente: la del estilo, luego la de la marca; se buscan en la carpeta de la familia que da
+  `util.resources.font_family_dir(style.captions.font)` (si no existe, la de `brand.fonts.body`),
+  que es la misma carpeta que el render pasa como `fontsdir` a libass (libass no recorre
+  subcarpetas: con `assets/fonts/` a secas no carga ninguna fuente), y luego en el sistema. Si no está, se usa Arial (Windows/macOS) o DejaVu Sans
   (Linux) con un AVISO.
+
+`captions build` y `build_for_version()` se niegan a escribir en una versión entregada
+(`.entregado`).
 
 ## Posición y rostro
 

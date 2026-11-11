@@ -159,8 +159,9 @@ def rule_p04(plan: EditPlan, lc: LintContext) -> list[Finding]:
         return [
             finding(
                 "P04",
-                "WARN",
-                "No hay probe.json: no se pudo verificar que todo quede dentro de la duración.",
+                "ERROR",
+                "No hay probe.json: sin la duración del VIDEO_BASE no se puede garantizar que "
+                "nada pase del final. Ejecutá 'editoria probe <proyecto>' y volvé a validar.",
             )
         ]
     for v in plan.video:

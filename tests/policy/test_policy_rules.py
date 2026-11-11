@@ -139,8 +139,11 @@ def test_p04_clean_and_frame_tolerance() -> None:
     assert not any(r == "P04" for r, _ in ids(plan))
 
 
-def test_p04_unknown_duration_warns() -> None:
-    assert ("P04", "WARN") in ids(base_plan(), ctx(duration=None))
+def test_p04_unknown_duration_is_error() -> None:
+    findings = lint_with(base_plan(), ctx(duration=None))
+    p04 = [f for f in findings if f.id == "P04"]
+    assert [f.severity for f in p04] == ["ERROR"]
+    assert "editoria probe" in p04[0].message
 
 
 # ---- P05 ---------------------------------------------------------------------------------

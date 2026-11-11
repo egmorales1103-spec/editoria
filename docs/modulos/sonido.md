@@ -15,6 +15,9 @@ editoria audio check-voice <slug> <media>       # desfase (ms) y similitud de la
 `check-voice` termina con código 1 si el desfase supera un cuadro (33 ms) o si la similitud es
 menor a 0,5. `<media>` puede ser un MP4 o un WAV.
 
+`audio mix` (y `mix_for_version()`) se niegan a escribir en una versión entregada
+(`.entregado`): crear una versión nueva con `editoria version new`.
+
 ## Puntos de entrada en Python
 
 | Nombre | Qué hace |

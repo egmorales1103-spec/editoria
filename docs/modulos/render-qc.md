@@ -12,7 +12,10 @@ editoria contact-sheet <slug> --version V1 --every 2     # hoja_contactos.jpg
 editoria qc <slug> --version V1                          # qc/qc.json + qc/qc.md (sale con 1 si hay FAIL)
 ```
 
-`render` se niega a sobrescribir `video.mp4` en una versión entregada (`.entregado`).
+Una versión entregada (`.entregado`) es inmutable: `render` (con cualquier salida: completo,
+`--sample-window` o `--solo-componer`), `contact-sheet` y `qc` se niegan con un mensaje en
+español, y lo mismo hacen `FFmpegRenderer.render` (si `out` cae dentro de una versión entregada o
+de `00_original/`), `contact_sheet()` y `DefaultQualityControl.run()`.
 
 ## Qué lee `render` (dentro de `04_versiones/Vn/`)
 
@@ -24,7 +27,7 @@ editoria qc <slug> --version V1                          # qc/qc.json + qc/qc.md
 | emojis del plan (`assets/emoji/<id>.gif`) | A7 | se omite con aviso (si no vinieron en `overlays.json`) |
 | `audio/mezcla.wav` | A4 | aviso; se usa el audio del VIDEO_BASE |
 | tomas aceptadas (`ProjectShotLibrary.accepted`) | A6 | ninguna; un intervalo `generated` sin toma es error (P05) |
-| `assets/fonts/` | A7 | libass usa fuentes del sistema (aviso) |
+| `assets/fonts/<Familia>/` (`util.resources.font_family_dir(style.captions.font)`, si no la de `brand.fonts.body`) | A7 | libass usa fuentes del sistema (aviso) |
 
 Escribe `video.mp4` y `filtergraph.txt` (el grafo exacto usado, para reproducir el render).
 
@@ -35,7 +38,7 @@ Escribe `video.mp4` y `filtergraph.txt` (el grafo exacto usado, para reproducir 
 3. **Tomas generadas**: overlay del clip conformado, sin audio, durante `[in, out]`.
 4. **Gráficos** (secuencias PNG RGBA, `setpts` + `eof_action=pass`) y luego **emojis** (GIF en bucle, recortado a `[start, end]` y escalado a `w×h`).
 5. **Subtítulos ASS** al final (`ass` con `fontsdir`).
-6. **Encode**: libx264 High, yuv420p, CRF 18, preset `medium` (muestras `veryfast`), AAC 192 kbps 48 kHz estéreo, `+faststart`. `--sample-window a-b` recorta video y audio al final del grafo, así la sincronía no cambia.
+6. **Encode**: libx264 High, yuv420p, CRF 18, preset `medium` (muestras `veryfast`), AAC 192 kbps 48 kHz estéreo, `+faststart`. `--sample-window a-b` busca en la entrada (`-ss a -t b-a` antes del base y de la mezcla) para decodificar solo la ventana; justo después del base el grafo restaura la línea de tiempo original (`setpts=PTS+a/TB`, o tras el `concat` de los segmentos recortados a la ventana), así tomas, gráficos, emojis y subtítulos usan sus tiempos originales sin cambios, y al final `trim=start=a:end=b,setpts=PTS-STARTPTS` lleva la muestra a 0. Un `push` que empezó antes de `a` continúa su zoom desde el cuadro que le corresponde. Un test compara cuadros y audio de la muestra con los mismos instantes del render completo.
 
 ffmpeg se ejecuta con `cwd` = carpeta de la versión y todas las rutas son relativas (`-/filter_complex filtergraph.txt`; en ffmpeg < 7, `-filter_complex_script`). libass no abre rutas con acentos en Windows: si el ASS no tiene una ruta relativa ASCII, se copia junto al video.
 
@@ -64,6 +67,11 @@ Responde las 9 preguntas de la sección 10 del prompt; cada chequeo indica la pr
 | `plan_lint` | — | linter de políticas (si está disponible o se inyecta) | FAIL con ERROR |
 | `deliverables` | P11 | archivos reales y pendientes | WARN si faltan SRT/VTT |
 | `identity`, `background`, `lips`, `aesthetic` (+ `generated_shots`) | P24, P08, P03 | no verificable automáticamente | siempre REVISIÓN HUMANA |
+
+`qc.json` guarda en `video_sha256` el sha256 del `video.mp4` verificado (la entrega lo compara).
+El análisis del ORIGINAL (`blackdetect`, `freezedetect`, `ebur128`) se cachea en
+`01_analisis/.cache/qc_original.json` con clave sha256 del original y parámetros de los filtros:
+los QC siguientes solo decodifican el video final.
 
 Las cajas de subtítulos salen de `subtitulos.json` cuando trae `box`; si no, se estiman desde `subtitulos.ass` (estilo, alineación, márgenes, `\pos`, `\an`).
 

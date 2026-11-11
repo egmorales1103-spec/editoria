@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import math
 import re
 import struct
 import tempfile
 import wave
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -36,6 +38,43 @@ class VideoAnalysis:
     lufs: float | None = None
     lra: float | None = None
     true_peak: float | None = None
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "decode_errors": list(self.decode_errors),
+            "black": [list(s) for s in self.black],
+            "freeze": [list(s) for s in self.freeze],
+            "lufs": _finite(self.lufs),
+            "lra": self.lra,
+            "true_peak": _finite(self.true_peak),
+        }
+
+    @classmethod
+    def from_json(cls, data: dict[str, Any]) -> VideoAnalysis:
+        def spans(key: str) -> list[Span]:
+            return [(float(a), float(b)) for a, b in data.get(key, [])]
+
+        def opt(key: str) -> float | None:
+            v = data.get(key)
+            if v == "-inf":
+                return float("-inf")
+            return None if v is None else float(v)
+
+        return cls(
+            decode_errors=[str(e) for e in data.get("decode_errors", [])],
+            black=spans("black"),
+            freeze=spans("freeze"),
+            lufs=opt("lufs"),
+            lra=opt("lra"),
+            true_peak=opt("true_peak"),
+        )
+
+
+def _finite(x: float | None) -> float | str | None:
+    """JSON has no -inf: keep it as the string '-inf'."""
+    if x is not None and math.isinf(x):
+        return "-inf"
+    return x
 
 
 def _num(text: str) -> float:

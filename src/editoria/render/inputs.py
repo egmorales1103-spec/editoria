@@ -6,9 +6,19 @@ import importlib
 import json
 from pathlib import Path
 
+from editoria.captions.fonts import caption_fonts_dir
 from editoria.render.geometry import base_for, face_box_source, scale_face
 from editoria.render.media import probe_media
-from editoria.schemas import Box, Canvas, ConformedClip, EditPlan, OverlayClip, RenderInputs
+from editoria.schemas import (
+    Box,
+    BrandProfile,
+    Canvas,
+    ConformedClip,
+    EditPlan,
+    OverlayClip,
+    RenderInputs,
+    StylePreset,
+)
 from editoria.util import resources
 from editoria.util.geometry import zone_box
 from editoria.util.log import warn
@@ -97,6 +107,23 @@ def face_box_canvas(ctx: ProjectContext, canvas: Canvas) -> Box | None:
     return base_for(w, h, canvas, face).to_canvas(fb)
 
 
+def render_fonts_dir(ctx: ProjectContext, plan: EditPlan) -> Path | None:
+    """libass ``fontsdir``: the caption font family folder (libass does not scan subfolders).
+
+    Same resolution as the captions builder: ``font_family_dir(style.captions.font)`` with
+    the brand body font as fallback.
+    """
+    try:
+        style: StylePreset | None = ctx.load_style(plan.captions.style)
+    except FileNotFoundError:
+        style = None
+    try:
+        brand: BrandProfile | None = resources.load_brand(plan.brand)
+    except FileNotFoundError:
+        brand = None
+    return caption_fonts_dir(style, brand)
+
+
 def inputs_from_version(ctx: ProjectContext, version: str) -> RenderInputs:
     """Build RenderInputs from the files inside ``04_versiones/<version>/``.
 
@@ -123,11 +150,11 @@ def inputs_from_version(ctx: ProjectContext, version: str) -> RenderInputs:
     if not mix.is_file():
         warn(f"No hay {MIX_WAV.as_posix()} en {version}: se usa el audio del VIDEO_BASE.")
 
-    fonts = resources.fonts_dir()
+    fonts = render_fonts_dir(ctx, plan)
     shots = accepted_shots(ctx) if any(iv.method == "generated" for iv in plan.video) else {}
     return RenderInputs(
         captions_ass=ass_path,
-        fonts_dir=fonts if fonts.is_dir() else None,
+        fonts_dir=fonts,
         overlays=overlays,
         mix_wav=mix if mix.is_file() else None,
         shots=shots,

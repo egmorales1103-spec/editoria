@@ -8,11 +8,12 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
+from editoria.policy.immutable import ensure_not_delivered
 from editoria.render.media import probe_media
 from editoria.schemas import EditPlan
 from editoria.util import ffmpeg
 from editoria.util.files import fmt_ts
-from editoria.util.project import VIDEO_FILE, ProjectContext
+from editoria.util.project import PLAN_FILE, VIDEO_FILE, ProjectContext
 
 CONTACT_SHEET_FILE = "hoja_contactos.jpg"
 THUMB_W = 216
@@ -97,12 +98,13 @@ def build_sheet(video: Path, marks: list[Mark], out: Path, fps: float) -> Path:
 
 def contact_sheet(ctx: ProjectContext, version: str, every: float) -> Path:
     """Write ``<version>/hoja_contactos.jpg`` from the rendered ``video.mp4``."""
+    ensure_not_delivered(ctx, version)
     vdir = ctx.version_dir(version)
     video = vdir / VIDEO_FILE
     if not video.is_file():
         raise FileNotFoundError(f"No existe {VIDEO_FILE} en {version}. Ejecutá 'editoria render'.")
     info = probe_media(video)
-    plan_path = vdir / "plan.yaml"
+    plan_path = vdir / PLAN_FILE
     plan = ctx.load_plan(version) if plan_path.is_file() else None
     marks = sheet_marks(plan, info.duration, every)
     return build_sheet(video, marks, vdir / CONTACT_SHEET_FILE, float(info.fps))

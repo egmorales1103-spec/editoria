@@ -177,9 +177,76 @@ def test_missing_overlay_files_are_skipped_with_warning(tmp_path: Path) -> None:
 
 def test_sample_window_trims_video_and_audio(tmp_path: Path) -> None:
     g = build(plan(), tmp_path, enc=EncodeSettings(sample_window=(2.0, 5.0)))
+    # seek in the input (only the window is decoded) ...
+    assert g.input_args[:5] == ["-ss", "2", "-t", "3", "-i"]
+    # ... and restore the original timeline before any layer, then cut the window back to 0
+    assert g.script.startswith("[0:v]setpts=PTS+2/TB,")
     assert "trim=start=2:end=5,setpts=PTS-STARTPTS[vout]" in g.script
-    assert "atrim=start=2:end=5" in g.script
+    assert "atrim=start=0:end=3" in g.script  # the audio inputs are seeked as well
     assert g.duration == pytest.approx(3.0)
+
+
+def test_sample_window_from_zero_does_not_seek(tmp_path: Path) -> None:
+    g = build(plan(), tmp_path, enc=EncodeSettings(sample_window=(0.0, 4.0)))
+    assert g.input_args[:3] == ["-t", "4", "-i"]
+    assert "setpts=PTS+" not in g.script
+
+
+def test_sample_window_seeks_the_mix_and_clips_segments(tmp_path: Path) -> None:
+    p = plan(
+        VideoInterval(id="v01", in_=0, out=2.4, method="original"),
+        VideoInterval(id="v02", in_=2.4, out=4.0, method="reframe", zoom=1.15, anchor="face"),
+        VideoInterval(id="v03", in_=6.0, out=9.0, method="reframe", zoom=1.1, anchor="face"),
+    )
+    mix = tmp_path / "mezcla.wav"
+    mix.write_bytes(b"RIFF")
+    g = build(p, tmp_path, RenderInputs(mix_wav=mix), enc=EncodeSettings(sample_window=(3.0, 7.0)))
+    mix_at = g.input_args.index("mezcla.wav")
+    assert g.input_args[mix_at - 5 : mix_at] == ["-ss", "3", "-t", "4", "-i"]
+    assert "split=3" in g.script  # v01 (before the window) is not decoded at all
+    assert "trim=start=3:end=4," in g.script
+    assert "trim=start=4:end=6," in g.script
+    assert "trim=start=6," in g.script  # the last segment stays open-ended
+    assert "concat=n=3:v=1:a=0,setpts=PTS+3/TB,fps=30/1[v0]" in g.script
+
+
+def test_sample_window_continues_push_zoom(tmp_path: Path) -> None:
+    p = plan(VideoInterval(id="v02", in_=2, out=4, method="reframe", zoom=1.2, motion="push"))
+    full = build(p, tmp_path)
+    assert "min(on/59" in full.script
+    g = build(p, tmp_path, enc=EncodeSettings(sample_window=(3.0, 5.0)))
+    assert "min((on+30)/59" in g.script  # 1 s (30 frames) of the push already happened
+
+
+def test_sample_window_skips_layers_outside_it(tmp_path: Path) -> None:
+    gdir = tmp_path / "graficos" / "g01"
+    gdir.mkdir(parents=True)
+    (gdir / "00001.png").write_bytes(b"")
+    gif = tmp_path / "graficos" / "e01.gif"
+    gif.write_bytes(b"GIF")
+    inputs = RenderInputs(
+        overlays=[
+            OverlayClip(id="g01", frames_pattern=gdir / "%05d.png", x=240, y=220, w=600,
+                        h=200, start=0.3, end=1.8),
+            OverlayClip(id="e01", frames_pattern=gif, x=740, y=220, w=200, h=200, start=6.2,
+                        end=7.4, is_gif=True),
+        ],
+    )  # fmt: skip
+    g = build(plan(), tmp_path, inputs, enc=EncodeSettings(sample_window=(5.0, 8.0)))
+    assert "graficos/g01/%05d.png" not in g.input_args
+    assert "graficos/e01.gif" in g.input_args
+    # layers keep their original-time offsets (the timeline is restored after the base)
+    assert "setpts=PTS-STARTPTS+6.2/TB" in g.script
+    assert r"between(t\,6.2\,7.4)" in g.script
+
+
+def test_same_plan_gives_the_same_graph(tmp_path: Path) -> None:
+    p = plan(
+        VideoInterval(id="v01", in_=0, out=2.4, method="original"),
+        VideoInterval(id="v02", in_=2.4, out=4.0, method="reframe", zoom=1.15, motion="push"),
+    )
+    first, second = build(p, tmp_path), build(p, tmp_path)
+    assert first.script == second.script and first.input_args == second.input_args
 
 
 def test_small_source_is_upscaled_with_warning(tmp_path: Path) -> None:

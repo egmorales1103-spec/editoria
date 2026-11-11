@@ -33,6 +33,7 @@ from editoria.audio.loudness import (
 from editoria.audio.sfx import resolve_sfx
 from editoria.audio.voice import check_voice as _check_voice
 from editoria.audio.wavio import SAMPLE_RATE, AudioError, decode_mono, read_wav, require_audio
+from editoria.policy.immutable import ensure_not_delivered
 from editoria.schemas import (
     EditPlan,
     MixResult,
@@ -349,6 +350,7 @@ def mix_for_version(ctx: ProjectContext, version: str) -> MixResult:
     Writes ``<version>/audio/mezcla.wav`` and ``mezcla.json`` (MixResult). SFX density
     problems are reported as warnings (the plan linter is the gate).
     """
+    ensure_not_delivered(ctx, version)  # audio/ of a delivered version is immutable
     plan: EditPlan = ctx.load_plan(version)
     out_dir = ctx.version_dir(version) / "audio"
     out_dir.mkdir(parents=True, exist_ok=True)

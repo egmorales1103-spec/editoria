@@ -1,14 +1,24 @@
-"""Automatic plan draft for a style (A/B/C): captions, emphasis, hook graphic, reframes, SFX.
+"""Automatic plan draft for a style (A/B/C): captions, emphasis, graphics, reframes, SFX.
 
 The draft is a starting point for the creative director: it only uses information that is
 in the project (transcript, segments, cuts, face, brand glossary) and is built so that it
-passes the policy linter.
+passes the policy linter. Each style gets its own distinctive graphics (§8 of the prompt:
+"A, B y C, claramente distintas en composición, ritmo y uso de gráficos"):
+
+- A (claridad): one ``palabra_clave`` with a glossary term (or emphasis) of the hook.
+- B (explicación): ``titulo_gancho`` on the hook + a ``checklist`` whose items are short
+  phrases taken literally from the development segments.
+- C (ritmo): ``titulo_gancho`` in upper case with the hook phrase + one licensed animated
+  emoji (E03 fuego / E01 idea) on the closing.
+
+No text is invented: every word comes from the transcript/segments; figures only appear
+when spoken (and segments with figures are never turned into checklist items).
 """
 
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Literal
 
 import yaml
@@ -42,6 +52,15 @@ EMPHASIS_MIN_GAP_S = 1.0  # at most one emphasised term per second
 HOOK_GRAPHIC_MAX_S = 2.5
 HOOK_GRAPHIC_MIN_S = 0.8
 HOOK_TITLE_MAX_WORDS = 6
+CHECKLIST_MIN_ITEMS = 2
+CHECKLIST_MAX_ITEMS = 3
+CHECKLIST_MAX_WORDS = 7
+CHECKLIST_MAX_CHARS = 48  # params.schema.json of the checklist template
+CHECKLIST_MAX_S = 6.0
+EMOJI_MAX_S = 1.5
+EMOJI_MIN_S = 0.6
+EMOJI_PREFERENCE = ("E03", "E01")  # fuego (énfasis), idea
+DEVELOPMENT_ROLES = ("body", "example")
 SFX_GAIN = {"pop": -14.0, "click": -16.0, "whoosh": -16.0, "ding": -15.0}
 GRAPHIC_CUE = "pop"
 REFRAME_CUE = "whoosh"
@@ -109,6 +128,7 @@ class DraftInputs:
     brand: BrandProfile
     brand_slug: str
     sfx_manifest: AssetManifest
+    external_manifest: AssetManifest = field(default_factory=AssetManifest)
 
     @classmethod
     def from_project(cls, ctx: ProjectContext) -> DraftInputs:
@@ -133,6 +153,7 @@ class DraftInputs:
             brand=resources.load_brand(cfg.brand),
             brand_slug=cfg.brand,
             sfx_manifest=resources.load_sfx_manifest(),
+            external_manifest=resources.load_external_manifest(),
         )
 
 
@@ -156,25 +177,44 @@ def _template_cue(template: str) -> str | None:
     return str(cue) if cue else None
 
 
+def _forbidden(inp: DraftInputs, *texts: str) -> bool:
+    return any(contains_phrase(t, c) for t in texts for c in inp.brand.forbidden_claims)
+
+
+def _words_in(inp: DraftInputs, seg: Segment) -> list[Word]:
+    return [w for w in inp.words if w.end > seg.start and w.start < seg.end]
+
+
+def _hook_title(inp: DraftInputs, hook: Segment) -> str:
+    toks = (" ".join(w.text for w in _words_in(inp, hook)) or hook.text).split()
+    return _clean(" ".join(toks[:HOOK_TITLE_MAX_WORDS]))
+
+
 def hook_graphic(
-    inp: DraftInputs, style: StylePreset, rng: Window
+    inp: DraftInputs,
+    style: StylePreset,
+    rng: Window,
+    prefer: Literal["palabra_clave", "titulo_gancho"] = "palabra_clave",
+    upper: bool = False,
 ) -> tuple[GraphicItem | None, str]:
+    """Graphic on the hook: a glossary term (``palabra_clave``) or the hook phrase
+    (``titulo_gancho``, optionally in upper case), in the order given by ``prefer``."""
     hook = _hook_segment(inp.segments, rng)
     if hook is None:
         return None, "sin segmentos en la ventana: no hay gráfico de gancho"
-    hook_words = [w for w in inp.words if w.end > hook.start and w.start < hook.end]
-    term = _glossary_term_in(hook_words, inp.brand.glossary)
-    template: str | None = None
-    text = ""
-    if term and _allowed(style, "palabra_clave"):
-        template, text = "palabra_clave", term
-    elif _allowed(style, "titulo_gancho"):
-        toks = (" ".join(w.text for w in hook_words) or hook.text).split()
-        text = _clean(" ".join(toks[:HOOK_TITLE_MAX_WORDS]))
-        template = "titulo_gancho" if text else None
-    if template is None:
+    term = _glossary_term_in(_words_in(inp, hook), inp.brand.glossary)
+    options: list[tuple[str, str]] = []
+    if term:
+        options.append(("palabra_clave", term))
+    title = _hook_title(inp, hook)
+    if title:
+        options.append(("titulo_gancho", title.upper() if upper else title))
+    options.sort(key=lambda o: o[0] != prefer)
+    choice = next(((t, x) for t, x in options if _allowed(style, t)), None)
+    if choice is None:
         return None, "el estilo no permite palabra_clave ni titulo_gancho"
-    if any(contains_phrase(text, c) for c in inp.brand.forbidden_claims):
+    template, text = choice
+    if _forbidden(inp, text):
         return None, "el texto del gancho contiene un mensaje prohibido por la marca"
     start = max(hook.start, rng[0])
     end = min(hook.end, start + HOOK_GRAPHIC_MAX_S, rng[1], inp.duration)
@@ -190,7 +230,116 @@ def hook_graphic(
         zone="upper",
         params={"texto": text},
     )
-    return item, f"gráfico '{template}' en el gancho ({hook.id})"
+    return item, f"'{template}' en el gancho ({hook.id})"
+
+
+def _short_phrase(text: str) -> str:
+    """Literal phrase of a segment, cut to the first words that fit a checklist item."""
+    toks = text.split()[:CHECKLIST_MAX_WORDS]
+    while toks and len(_clean(" ".join(toks))) > CHECKLIST_MAX_CHARS:
+        toks = toks[:-1]
+    return _clean(" ".join(toks))
+
+
+def _face_zone(inp: DraftInputs, canvas: Canvas) -> Literal["upper", "lower"]:
+    """Big cards go to the half of the canvas without the face (lower when unknown)."""
+    box = inp.face.union_box if inp.face is not None else None
+    if box is None:
+        return "lower"
+    sw, sh = inp.source_size
+    face = base_transform(sw, sh, canvas, box).to_canvas(box)
+    return "lower" if face.y + face.h / 2 < canvas.height / 2 else "upper"
+
+
+def checklist_graphic(
+    inp: DraftInputs, style: StylePreset, rng: Window, canvas: Canvas, after: float
+) -> tuple[GraphicItem | None, str]:
+    """``checklist`` with 2–3 short phrases taken literally from consecutive development
+    segments (never segments with figures or forbidden claims)."""
+    if not _allowed(style, "checklist"):
+        return None, "el estilo no permite checklist"
+    lo = max(rng[0], after) - 1e-6
+    segs = [s for s in inp.segments if s.role in DEVELOPMENT_ROLES and lo <= s.start]
+    segs = [s for s in segs if s.end <= rng[1] + 1e-6]
+    picked: list[tuple[Segment, str]] = []
+    for seg in segs:
+        phrase = _short_phrase(seg.text)
+        if not phrase or has_figure(seg.text) or _forbidden(inp, phrase):
+            if picked:
+                break  # items must be consecutive ideas
+            continue
+        if picked and seg.end - picked[0][0].start > CHECKLIST_MAX_S + 1e-6:
+            break
+        picked.append((seg, phrase))
+        if len(picked) == CHECKLIST_MAX_ITEMS:
+            break
+    if len(picked) < CHECKLIST_MIN_ITEMS:
+        return None, "sin dos frases de desarrollo cortas y seguidas: no hay checklist"
+    start = picked[0][0].start
+    end = min(picked[-1][0].end, start + CHECKLIST_MAX_S, rng[1], inp.duration)
+    item = GraphicItem(
+        id="g02",
+        template="checklist",
+        in_=round(start, 3),
+        out=round(end, 3),
+        zone=_face_zone(inp, canvas),
+        params={"items": [p for _, p in picked]},
+    )
+    ids = ", ".join(seg.id for seg, _ in picked)
+    return item, f"'checklist' con frases literales de {ids}"
+
+
+def closing_emoji(inp: DraftInputs, rng: Window) -> tuple[GraphicItem | None, str]:
+    """One licensed animated emoji (E03 fuego / E01 idea) on the closing segment."""
+    licensed = [
+        e
+        for e in EMOJI_PREFERENCE
+        if (entry := inp.external_manifest.get(e)) is not None and entry.license.strip()
+    ]
+    if not licensed:
+        return None, "sin emoji con licencia en assets/externos.yaml"
+    closing = next(
+        (s for s in inp.segments if s.role == "closing" and s.end > rng[0] and s.start < rng[1]),
+        None,
+    )
+    if closing is None:
+        return None, "sin segmento de cierre en la ventana: no hay emoji"
+    start = max(closing.start, rng[0])
+    end = min(closing.end, start + EMOJI_MAX_S, rng[1], inp.duration)
+    if end - start < EMOJI_MIN_S:
+        return None, "el cierre es demasiado corto para un emoji"
+    item = GraphicItem(
+        id="g03", emoji=licensed[0], in_=round(start, 3), out=round(end, 3), zone="upper_right"
+    )
+    return item, f"emoji {licensed[0]} en el cierre ({closing.id})"
+
+
+def plan_graphics(
+    inp: DraftInputs, style: StylePreset, rng: Window, canvas: Canvas
+) -> tuple[list[GraphicItem], list[str]]:
+    """Distinctive graphics per style (see the module docstring)."""
+    sid = style.id.upper()
+    hook, note = hook_graphic(
+        inp,
+        style,
+        rng,
+        prefer="titulo_gancho" if sid in ("B", "C") else "palabra_clave",
+        upper=sid == "C",
+    )
+    notes = [note]
+    items = [hook] if hook else []
+    extra: GraphicItem | None = None
+    if sid == "B":
+        extra, note = checklist_graphic(inp, style, rng, canvas, hook.out if hook else rng[0])
+        notes.append(note)
+    elif sid == "C":
+        extra, note = closing_emoji(inp, rng)
+        notes.append(note)
+    if extra is not None:
+        items.append(extra)
+    items.sort(key=lambda g: g.in_)
+    items = [g.model_copy(update={"id": f"g{i + 1:02d}"}) for i, g in enumerate(items)]
+    return items, notes
 
 
 def reframe_zoom(inp: DraftInputs, style: StylePreset, canvas: Canvas) -> float:
@@ -322,15 +471,14 @@ def draft_from_inputs(
                 f"La ventana {a:g}-{b:g} s no es válida para un video de {inp.duration:.2f} s."
             )
     emphasis = [Emphasis(word=i) for i in find_emphasis(inp.words, inp.brand.glossary)]
-    graphic, g_note = hook_graphic(inp, style, rng)
-    graphics = [graphic] if graphic else []
+    graphics, g_notes = plan_graphics(inp, style, rng, canvas)
     video = plan_video(inp, style, rng, canvas)
     sfx, sfx_notes = plan_sfx(inp, style, graphics, video, rng)
     n_reframes = sum(1 for v in video if v.method == "reframe")
     notes = [
         f"Borrador automático del estilo {style.id} ({style.name}).",
         f"Subtítulos de todo el audio con {len(emphasis)} palabras en énfasis (glosario y cifras).",
-        g_note[:1].upper() + g_note[1:] + ".",
+        "Gráficos: " + "; ".join(g_notes) + ".",
         f"{n_reframes} reencuadre(s) cada ~{style.reframe.cadence_s:g} s en cambios de idea, "
         "sin cruzar cortes de cámara.",
         f"{len(sfx)} SFX solo en entradas de gráficos y reencuadres.",

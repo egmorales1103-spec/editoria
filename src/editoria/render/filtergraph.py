@@ -7,6 +7,15 @@ mix (never the audio of a generated shot).
 
 Paths inside the graph are relative to ``cwd`` (the version folder): Windows + spaces +
 accents break absolute paths in filter options, and libass cannot open non-ASCII paths.
+
+Sample windows ``a-b`` seek in the INPUT (``-ss a -t b-a`` before the base and the mix), so
+only the window is decoded. Sync is kept by restoring the original timeline right after the
+base: ``setpts=PTS+a/TB`` (single segment) or after the concat of the clipped segments.
+Every later layer (generated shots, graphics, emojis, ASS captions) keeps using
+original-time timestamps unchanged; the final ``trim=start=a:end=b,setpts=PTS-STARTPTS``
+brings the window back to 0, and the audio (seeked the same way) starts at 0 too. A
+``push`` reframe that starts before ``a`` continues its zoom from the frame it would have
+reached (``on`` offset), so the sample matches the full render.
 """
 
 from __future__ import annotations
@@ -66,6 +75,7 @@ class _Segment:
     start: float
     end: float | None  # None = until the end of the base
     iv: VideoInterval | None  # reframe interval, or None for the plain base
+    skipped: float = 0.0  # seconds of the reframe cut off by a sample window (push offset)
 
 
 def _t(x: float) -> str:
@@ -116,6 +126,22 @@ def _segments(ivs: list[VideoInterval], duration: float) -> list[_Segment]:
     return segs
 
 
+def _clip_segments(segs: list[_Segment], a: float, b: float) -> list[_Segment]:
+    """Segments that touch the window [a, b], clipped to it (the last one stays open)."""
+    out: list[_Segment] = []
+    for seg in segs:
+        end = seg.end if seg.end is not None else float("inf")
+        if end <= a + 1e-6 or seg.start >= b - 1e-6:
+            continue
+        start = max(seg.start, a)
+        new_end = seg.end if seg.end is not None and seg.end < b - 1e-6 else None
+        out.append(_Segment(start, new_end, seg.iv, skipped=start - seg.start))
+    if out and out[-1].end is not None:
+        last = out[-1]
+        out[-1] = _Segment(last.start, None, last.iv, last.skipped)
+    return out
+
+
 def _overlay_dims(ov: OverlayClip) -> str:
     return f"scale={ov.w}:{ov.h}:flags=lanczos,format=rgba"
 
@@ -157,6 +183,18 @@ def build_render_graph(
         where = "centrado en el rostro" if face is not None else "centrado (sin datos de rostro)"
         warnings.append(WARN_HORIZONTAL.format(w=base.width, h=base.height, where=where))
 
+    # sample window: seek in the input, keep original-time timestamps inside the graph
+    a, b = 0.0, duration
+    windowed = enc.sample_window is not None
+    if enc.sample_window is not None:
+        a, b = enc.sample_window
+        b = min(b, duration)
+        if not 0 <= a < b:
+            raise RenderError(f"Ventana de muestra inválida: {a}-{b}.")
+    seek = ["-ss", _t(a)] if a > 0 else []
+    seek += ["-t", _t(b - a)] if windowed else []
+    shift = f"setpts=PTS+{_t(a)}/TB," if a > 0 else ""
+
     ivs = _intervals(plan, duration, warnings)
     for iv in ivs:
         if iv.method == "reframe":
@@ -164,7 +202,7 @@ def build_render_graph(
             if msg:
                 raise ZoomGuardError(f"Reencuadre {iv.id} rechazado (P07): {msg}.")
 
-    args: list[str] = ["-i", rel_to(base_path, cwd)]
+    args: list[str] = [*seek, "-i", rel_to(base_path, cwd)]
     n_inputs = 1
     lines: list[str] = []
 
@@ -175,11 +213,13 @@ def build_render_graph(
 
     # 1) base + reframes -------------------------------------------------------------
     segs = _segments(ivs, duration)
+    if windowed:
+        segs = _clip_segments(segs, a, b)
     if len(segs) == 1 and segs[0].iv is None:
-        lines.append(f"[0:v]{base_crop}{finish},fps={fps_str(fps)}[v0]")
+        lines.append(f"[0:v]{shift}{base_crop}{finish},fps={fps_str(fps)}[v0]")
     else:
         names = [f"[s{i}]" for i in range(len(segs))]
-        lines.append(f"[0:v]split={len(segs)}{''.join(names)}")
+        lines.append(f"[0:v]{shift}split={len(segs)}{''.join(names)}")
         for i, seg in enumerate(segs):
             trim = f"trim=start={_t(seg.start)}"
             if seg.end is not None:
@@ -190,11 +230,13 @@ def build_render_graph(
                 z = iv.zoom or 1.0
                 anchor = anchor_source(iv, bt, face)
                 if iv.motion == "push":
-                    seg_end = seg.end if seg.end is not None else duration
-                    n = max(2, round((seg_end - seg.start) * float(fps)))
+                    seg_end = min(iv.out, duration)
+                    n = max(2, round((seg_end - iv.in_) * float(fps)))
                     ax = anchor[0] - bt.crop_x
                     ay = anchor[1] - bt.crop_y
-                    zexpr = f"1+{z - 1:.6f}*min(on/{n - 1}\\,1)"
+                    k0 = round(seg.skipped * float(fps))  # frames cut off by the window
+                    on = f"(on+{k0})" if k0 > 0 else "on"
+                    zexpr = f"1+{z - 1:.6f}*min({on}/{n - 1}\\,1)"
                     xexpr = f"max(0\\,min(iw-iw/zoom\\,{ax:.2f}-iw/zoom/2))"
                     yexpr = f"max(0\\,min(ih-ih/zoom\\,{ay:.2f}-ih/zoom/2))"
                     chain = (
@@ -206,7 +248,7 @@ def build_render_graph(
                     chain = f"crop={c.w}:{c.h}:{c.x}:{c.y},{finish}"
             lines.append(f"[s{i}]{trim},setpts=PTS-STARTPTS,{chain}[g{i}]")
         concat_in = "".join(f"[g{i}]" for i in range(len(segs)))
-        lines.append(f"{concat_in}concat=n={len(segs)}:v=1:a=0,fps={fps_str(fps)}[v0]")
+        lines.append(f"{concat_in}concat=n={len(segs)}:v=1:a=0,{shift}fps={fps_str(fps)}[v0]")
     cur = "v0"
     step = 0
 
@@ -225,6 +267,8 @@ def build_render_graph(
                 f"La toma generada '{iv.shot}' del intervalo {iv.id} no está aceptada o no se "
                 "encontró (P05). Usá material original o aceptá la toma con 'shots verdict'."
             )
+        if iv.out <= a + 1e-6 or iv.in_ >= b - 1e-6:
+            continue  # outside the sample window
         offset = max(0.0, iv.in_ - clip.start)
         d = iv.out - iv.in_
         k = n_inputs
@@ -254,6 +298,8 @@ def build_render_graph(
         if end <= start:
             warnings.append(f"El gráfico {ov.id} queda fuera del video; se omite.")
             continue
+        if end <= a + 1e-6 or start >= b - 1e-6:
+            continue  # outside the sample window
         d = end - start
         k = n_inputs
         if ov.is_gif:
@@ -293,12 +339,7 @@ def build_render_graph(
             cur = out
 
     # sample window + final label ------------------------------------------------------
-    a, b = 0.0, duration
-    if enc.sample_window is not None:
-        a, b = enc.sample_window
-        b = min(b, duration)
-        if not 0 <= a < b:
-            raise RenderError(f"Ventana de muestra inválida: {a}-{b}.")
+    if windowed:
         lines.append(f"[{cur}]trim=start={_t(a)}:end={_t(b)},setpts=PTS-STARTPTS[vout]")
     else:
         lines.append(f"[{cur}]null[vout]")
@@ -307,7 +348,7 @@ def build_render_graph(
     audio_label: str | None = None
     src_a: str | None = None
     if inputs.mix_wav is not None and Path(inputs.mix_wav).is_file():
-        args += ["-i", rel_to(inputs.mix_wav, cwd)]
+        args += [*seek, "-i", rel_to(inputs.mix_wav, cwd)]
         src_a = f"{n_inputs}:a"
         n_inputs += 1
     else:
@@ -321,7 +362,7 @@ def build_render_graph(
         lines.append(
             f"[{src_a}]aresample={enc.audio_sr},"
             f"aformat=sample_rates={enc.audio_sr}:channel_layouts=stereo,"
-            f"apad,atrim=start={_t(a)}:end={_t(b)},asetpts=PTS-STARTPTS[aout]"
+            f"apad,atrim=start=0:end={_t(b - a)},asetpts=PTS-STARTPTS[aout]"  # inputs seeked
         )
         audio_label = "aout"
 

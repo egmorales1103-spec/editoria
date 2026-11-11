@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import typer
 
+from editoria.policy.immutable import delivered_message
 from editoria.util.cli import command_log, fail, open_project
 from editoria.util.ffmpeg import FFmpegError, FFmpegNotFound
 from editoria.util.log import info, ok, warn
-from editoria.util.project import VIDEO_FILE
+from editoria.util.project import PLAN_FILE, VIDEO_FILE
 
 
 def parse_window(text: str) -> tuple[float, float]:
@@ -50,8 +51,10 @@ def register(app: typer.Typer) -> None:
             vdir = ctx.version_dir(version)
         except ValueError as exc:
             fail(str(exc))
-        if not (vdir / "plan.yaml").is_file():
-            fail(f"No existe plan.yaml en {version}.")
+        if ctx.is_delivered(version):  # any output (full, sample, --solo-componer)
+            fail(delivered_message(version))
+        if not (vdir / PLAN_FILE).is_file():
+            fail(f"No existe {PLAN_FILE} en {version}.")
         window = None
         if sample_window:
             try:
@@ -82,8 +85,6 @@ def register(app: typer.Typer) -> None:
             out = vdir / VIDEO_FILE
         else:
             out = vdir / f"muestra_{window[0]:g}-{window[1]:g}.mp4"
-        if ctx.is_delivered(version) and out.exists():
-            fail(f"{version} ya fue entregada: {out.name} es inmutable. Creá una versión nueva.")
         enc = EncodeSettings(
             preset=preset or ("veryfast" if window else "medium"), crf=crf, sample_window=window
         )
@@ -112,10 +113,16 @@ def register(app: typer.Typer) -> None:
         from editoria.render.contact import contact_sheet
 
         ctx = open_project(slug)
+        try:
+            delivered = ctx.is_delivered(version)
+        except ValueError as exc:
+            fail(str(exc))
+        if delivered:
+            fail(delivered_message(version))
         with command_log(ctx.commands_log):
             try:
                 path = contact_sheet(ctx, version, every)
-            except (ValueError, FileNotFoundError, FFmpegNotFound) as exc:
+            except (ValueError, FileNotFoundError, PermissionError, FFmpegNotFound) as exc:
                 fail(str(exc))
             except FFmpegError as exc:
                 fail(f"ffmpeg falló al armar la hoja de contactos.\n{exc}")

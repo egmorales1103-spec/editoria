@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Literal
 
 from editoria.captions import ass
-from editoria.captions.fonts import resolve_family
+from editoria.captions.fonts import caption_fonts_dir, resolve_family
 from editoria.captions.formats import to_srt, to_vtt, write_events_json, write_text
 from editoria.captions.grouping import NBSP, WordGroup, group_words
 from editoria.captions.layout import (
@@ -277,6 +277,9 @@ def build_for_version(
     ctx: ProjectContext, version: str, builder: AssCaptionBuilder | None = None
 ) -> CaptionArtifacts:
     """Read <version>/plan.yaml and write the caption files into that version folder."""
+    from editoria.policy.immutable import ensure_not_delivered
+
+    ensure_not_delivered(ctx, version)  # captions of a delivered version are immutable
     plan = ctx.load_plan(version)
     style = ctx.load_style(plan.captions.style)
     brand = resources.load_brand(plan.brand)
@@ -289,7 +292,7 @@ def build_for_version(
     except FileNotFoundError:
         duration = None
     avoid = face_avoid_boxes(ctx.load_face(), plan.canvas, plan.video)
-    b = builder or AssCaptionBuilder(fonts_dir=resources.fonts_dir())
+    b = builder or AssCaptionBuilder(fonts_dir=caption_fonts_dir(style, brand))
     if not plan.captions.enabled:
         transcript = Transcript(language=transcript.language, model=transcript.model, words=[])
     return b.build(

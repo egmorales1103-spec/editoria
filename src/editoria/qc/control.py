@@ -4,11 +4,15 @@ from __future__ import annotations
 
 import importlib
 import json
+import os
 from collections.abc import Callable
 from fractions import Fraction
 from pathlib import Path
 
+from editoria.policy.immutable import ensure_not_delivered
 from editoria.qc.analysis import (
+    BLACK_FILTER,
+    FREEZE_FILTER,
     VideoAnalysis,
     analyze_media,
     correlate_voice,
@@ -36,7 +40,7 @@ from editoria.schemas import (
 )
 from editoria.util import resources
 from editoria.util.files import is_read_only, read_csv_rows, sha256_file
-from editoria.util.project import VIDEO_FILE, ProjectContext
+from editoria.util.project import PLAN_FILE, VIDEO_FILE, ProjectContext
 
 VoiceChecker = Callable[[Path, Path], VoiceCheck]
 Linter = Callable[[EditPlan, ProjectContext], list[Finding]]
@@ -60,6 +64,10 @@ SIM_FAIL = 0.3
 SIM_WARN = 0.6
 LUFS_TOL = 1.0
 CLIP_FAIL = 10
+
+# Cache of the ORIGINAL's analysis (it never changes; keyed by its sha256).
+CACHE_DIR = ".cache"
+ORIGINAL_CACHE_FILE = "qc_original.json"
 
 
 def _q(rule: str, question: str) -> str:
@@ -85,6 +93,38 @@ def _check(
 
 def _fmt_spans(spans: list[tuple[float, float]]) -> str:
     return ", ".join(f"{a:.2f}–{b:.2f}s" for a, b in spans)
+
+
+def original_cache_path(ctx: ProjectContext) -> Path:
+    return ctx.analysis_dir / CACHE_DIR / ORIGINAL_CACHE_FILE
+
+
+def original_analysis(
+    ctx: ProjectContext, original: Path, orig: MediaInfo, digest: str
+) -> VideoAnalysis:
+    """blackdetect + freezedetect (+ ebur128) of the original, cached by its sha256.
+
+    The cache lives in ``01_analisis/.cache/qc_original.json`` and is ignored when the
+    hash or the filter parameters differ (or the file is unreadable).
+    """
+    path = original_cache_path(ctx)
+    params = f"{BLACK_FILTER};{FREEZE_FILTER};ebur128={orig.has_audio}"
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if data.get("sha256") == digest and data.get("params") == params:
+            return VideoAnalysis.from_json(data["analysis"])
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    ana = analyze_media(original, audio=orig.has_audio, duration=orig.duration)
+    payload = {"sha256": digest, "params": params, "analysis": ana.to_json()}
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_name(path.name + ".tmp")
+        tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        os.replace(tmp, path)
+    except OSError:
+        pass  # the cache is an optimisation only
+    return ana
 
 
 def _default_linter() -> Linter | None:
@@ -113,24 +153,28 @@ class DefaultQualityControl:
 
     # ------------------------------------------------------------------------------------
     def run(self, ctx: ProjectContext, version: str) -> QCReport:
+        ensure_not_delivered(ctx, version)  # qc/ of a delivered version is immutable
         vdir = ctx.version_dir(version)
         checks: list[QCCheck] = []
         plan: EditPlan | None = None
         try:
             plan = ctx.load_plan(version)
         except Exception as exc:
-            checks.append(_check("plan", "", Q9, "FAIL", f"No se pudo leer plan.yaml: {exc}"))
+            checks.append(_check("plan", "", Q9, "FAIL", f"No se pudo leer {PLAN_FILE}: {exc}"))
 
         original = ctx.original_video()
         orig = probe_media(original)
+        orig_digest = sha256_file(original)
         video = vdir / VIDEO_FILE
+        video_digest = ""
 
-        checks.append(self._original_hash(ctx, original))
+        checks.append(self._original_hash(ctx, original, orig_digest))
         if not video.is_file():
             checks.append(_check("decode", "", Q1, "FAIL", f"No existe {VIDEO_FILE} en {version}."))
         else:
+            video_digest = sha256_file(video)  # the exact file this report verifies
             try:
-                checks += self._media_checks(ctx, plan, video, original, orig)
+                checks += self._media_checks(ctx, plan, video, original, orig, orig_digest)
             except Exception as exc:  # report, never crash the whole QC
                 checks.append(
                     _check("media", "", Q1, "FAIL", f"No se pudo analizar el video: {exc}")
@@ -145,7 +189,7 @@ class DefaultQualityControl:
         checks.append(self._deliverables(vdir))
         checks += self._human(plan)
 
-        report = QCReport(version=version, checks=checks)
+        report = QCReport(version=version, checks=checks, video_sha256=video_digest)
         report.summary = summarize(report)
         write_report(report, vdir / "qc")
         return report
@@ -158,6 +202,7 @@ class DefaultQualityControl:
         video: Path,
         original: Path,
         orig: MediaInfo,
+        orig_digest: str,
     ) -> list[QCCheck]:
         out: list[QCCheck] = []
         try:
@@ -169,9 +214,9 @@ class DefaultQualityControl:
         out.append(self._format(plan, info, orig))
         out.append(self._faststart(video))
         out.append(self._duration(info, orig))
-        ref = analyze_media(original, audio=False, duration=orig.duration)
+        ref = original_analysis(ctx, original, orig, orig_digest)
         out += self._black_freeze(ana, ref)
-        out.append(self._loudness(ctx, plan, video, info, orig, ana))
+        out.append(self._loudness(ctx, plan, video, info, orig, ana, ref))
         out.append(self._voice(original, video, info, orig))
         return out
 
@@ -290,6 +335,7 @@ class DefaultQualityControl:
         info: MediaInfo,
         orig: MediaInfo,
         ana: VideoAnalysis,
+        ref: VideoAnalysis | None = None,
     ) -> QCCheck:
         if not info.has_audio:
             status: QCStatus = "FAIL" if orig.has_audio else "PASS"
@@ -301,6 +347,8 @@ class DefaultQualityControl:
             f"integrado {ana.lufs} LUFS (objetivo {target}) · LRA {ana.lra} LU · "
             f"true peak {ana.true_peak} dBTP (máx. {tp_max}) · muestras saturadas {clipped}"
         ]
+        if ref is not None and ref.lufs is not None:
+            ev.append(f"original: {ref.lufs} LUFS · true peak {ref.true_peak} dBTP")
         mix_json = video.parent / "audio" / "mezcla.json"
         if mix_json.is_file():
             try:
@@ -361,8 +409,7 @@ class DefaultQualityControl:
         )
 
     # ---- project rules ------------------------------------------------------------------
-    def _original_hash(self, ctx: ProjectContext, original: Path) -> QCCheck:
-        digest = sha256_file(original)
+    def _original_hash(self, ctx: ProjectContext, original: Path, digest: str) -> QCCheck:
         expected = set()
         try:
             cfg_hash = ctx.load_config().original_sha256
@@ -545,7 +592,7 @@ class DefaultQualityControl:
     def _deliverables(self, vdir: Path) -> QCCheck:
         expected = [
             VIDEO_FILE,
-            "plan.yaml",
+            PLAN_FILE,
             "subtitulos.srt",
             "subtitulos.vtt",
             "subtitulos.ass",

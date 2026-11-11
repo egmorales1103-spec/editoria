@@ -18,20 +18,22 @@ def register(app: typer.Typer) -> None:
     ) -> None:
         """Genera subtitulos.ass, .srt, .vtt y .json para una versión."""
         from editoria.captions.builder import build_for_version
+        from editoria.policy.immutable import delivered_message
+        from editoria.util.project import PLAN_FILE
 
         ctx = open_project(slug)
         try:
-            plan_path = ctx.version_dir(version) / "plan.yaml"
+            plan_path = ctx.version_dir(version) / PLAN_FILE
         except ValueError as exc:
             fail(str(exc))
+        if ctx.is_delivered(version):
+            fail(delivered_message(version))
         if not plan_path.exists():
             fail(f"No existe {plan_path}. Creá el plan con 'editoria plan draft' o 'version new'.")
-        if ctx.is_delivered(version):
-            fail(f"La versión {version} ya fue entregada y es inmutable.")
         with command_log(ctx.commands_log):
             try:
                 arts = build_for_version(ctx, version)
-            except FileNotFoundError as exc:
+            except (FileNotFoundError, PermissionError) as exc:
                 fail(str(exc))
         spoken = [e for e in arts.events if not e.editorial]
         titles = len(arts.events) - len(spoken)

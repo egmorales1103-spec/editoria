@@ -6,11 +6,12 @@ import contextlib
 import os
 from pathlib import Path
 
+from editoria.policy.immutable import ImmutableTargetError, ensure_writable_path
 from editoria.render.filtergraph import RenderError, RenderGraph, build_render_graph
 from editoria.render.media import probe_media, rel_to
 from editoria.schemas import EditPlan, EncodeSettings, RenderInputs, fps_str
 from editoria.util import ffmpeg
-from editoria.util.project import DELIVERED_MARKER, VIDEO_FILE, ProjectContext
+from editoria.util.project import VIDEO_FILE, ProjectContext
 
 FILTERGRAPH_FILE = "filtergraph.txt"
 
@@ -65,12 +66,11 @@ class FFmpegRenderer:
     ) -> Path:
         out = Path(out).resolve()
         cwd = out.parent
+        try:  # never write into a delivered version or 00_original/ (P01/P20)
+            ensure_writable_path(out)
+        except ImmutableTargetError as exc:
+            raise RenderError(str(exc)) from exc
         cwd.mkdir(parents=True, exist_ok=True)
-        if (cwd / DELIVERED_MARKER).exists() and out.exists():
-            raise RenderError(
-                f"{out.name} pertenece a una versión entregada (inmutable). Creá una versión "
-                "nueva con 'editoria version new'."
-            )
         base_path = ctx.original_video()
         base = probe_media(base_path)
         graph = build_render_graph(plan, inputs, base, base_path, cwd, enc, face=ctx.load_face())
