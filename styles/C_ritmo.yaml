@@ -1,7 +1,15 @@
+# Estilo C — Ritmo y personalidad.
+# Pensado para piezas cortas y enérgicas: tipografía protagonista y cambios de ritmo.
+# Referencias en references/patrones.yaml (R01, R05, R09) y references/web.yaml (W02 a W04, W07).
 id: C
 name: Ritmo y personalidad
-description: Tipografía expresiva, recortes gráficos, preguntas u opciones, pausas de reacción y acentos sonoros puntuales.
-references: [R01, R05, R09, W02]
+description: >-
+  Tipografía expresiva en mayúsculas de uno o dos términos por evento, con contraste de tamaño y una
+  palabra en el color de acento (patrones R05 y R09). Reencuadres frecuentes en cambios de idea,
+  alternancia de planos (idea de R01), preguntas u opciones como gráfico cuando el contenido las
+  contiene, pausas de reacción y acentos sonoros puntuales. Es el estilo con más movimiento: la
+  densidad igual se limita por el linter (máximo de elementos y de SFX por 10 s).
+references: [R01, R05, R09, W02, W03, W04, W07]
 captions:
   font: Inter
   weight: 900

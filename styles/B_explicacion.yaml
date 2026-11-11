@@ -1,7 +1,15 @@
+# Estilo B — Explicación visual.
+# Pensado para explicar procesos, herramientas o flujos: la imagen ilustra lo que se dice.
+# Referencias en references/patrones.yaml (R02, R04, R06) y references/web.yaml (W05 a W08, W10).
 id: B
 name: Explicación visual
-description: Presentación a cámara combinada con diagramas, mensajes, comparaciones e interfaces simplificadas.
-references: [R02, R04, R06, W05]
+description: >-
+  Presentación a cámara combinada con apoyos que ilustran el discurso (patrón R02): listas de pasos
+  numerados, conversaciones simuladas, notificaciones genéricas, comparaciones y datos con etiqueta.
+  Tarjetas y cifras grandes con jerarquía clara (idea de R06). Subtítulos algo más pequeños y bajos
+  para dejar aire a los gráficos. Hasta dos elementos a la vez. Interfaces recreadas siempre
+  rotuladas como ilustración, nunca como captura real.
+references: [R02, R04, R06, W05, W06, W07, W08, W10]
 captions:
   font: Inter
   weight: 700

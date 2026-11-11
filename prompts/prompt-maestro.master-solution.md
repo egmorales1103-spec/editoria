@@ -36,7 +36,7 @@ Busco una edición profesional y creativa, coherente con contenido de negocio y 
 Buscá primero entre los adjuntos y las instrucciones disponibles:
 
 - VIDEO_BASE: exportación recortada en CapCut.
-- REFERENCIAS: nueve videos de estilo, catálogo de enlaces y recursos que acompañan este prompt.
+- REFERENCIAS: los patrones de edición (R01–R09) y los enlaces web (W01–W25) del repositorio, si los tenés a mano. Son descripciones y enlaces: orientan el estilo, no son material para insertar.
 - IDENTIDAD: logo, colores y tipografías, si están disponibles. No inventes una identidad oficial. Si faltan, usá blanco, negro y un único acento provisional que identifiques como propuesta.
 - DESTINO: por defecto, Reels, TikTok y Shorts verticales, 9:16.
 - OBJETIVO: inferilo del contenido si es claro; no cambies el mensaje.

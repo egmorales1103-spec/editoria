@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(uv run editoria:*)",
+      "Bash(editoria:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run mypy:*)",
+      "Bash(uv sync:*)",
+      "Bash(ffprobe:*)",
+      "PowerShell(uv run editoria:*)",
+      "PowerShell(editoria:*)",
+      "PowerShell(ffprobe:*)"
+    ],
+    "deny": [
+      "Edit(proyectos/*/00_original/**)",
+      "Write(proyectos/*/00_original/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit|Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --no-project python \"$CLAUDE_PROJECT_DIR/.claude/hooks/proteger_original.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --no-project python \"$CLAUDE_PROJECT_DIR/.claude/hooks/guardar_presupuesto.py\""
+          }
+        ]
+      }
+    ]
+  }
+}
