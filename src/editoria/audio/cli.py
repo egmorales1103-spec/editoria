@@ -11,6 +11,7 @@ from editoria.audio.mix import mix_for_version
 from editoria.audio.sfx import list_sfx
 from editoria.audio.voice import check_voice
 from editoria.audio.wavio import AudioError
+from editoria.policy.immutable import delivered_message
 from editoria.util.cli import command_log, fail, open_project
 from editoria.util.ffmpeg import FFmpegError, FFmpegNotFound
 from editoria.util.log import console, info, ok, warn
@@ -50,9 +51,22 @@ def register(app: typer.Typer) -> None:
         """Mezcla audio base + SFX (+ música) con loudness objetivo."""
         ctx = open_project(slug)
         try:
+            delivered = ctx.is_delivered(version)
+        except ValueError as exc:
+            fail(str(exc))
+        if delivered:
+            fail(delivered_message(version))
+        try:
             with command_log(ctx.commands_log):
                 result = mix_for_version(ctx, version)
-        except (AudioError, FileNotFoundError, ValueError, FFmpegError, FFmpegNotFound) as exc:
+        except (
+            AudioError,
+            FileNotFoundError,
+            PermissionError,
+            ValueError,
+            FFmpegError,
+            FFmpegNotFound,
+        ) as exc:
             fail(str(exc))
         ok(f"Mezcla escrita en {result.wav}")
         info(
