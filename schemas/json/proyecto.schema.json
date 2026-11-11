@@ -1,0 +1,133 @@
+{
+  "$defs": {
+    "Budget": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "default": "creditos",
+          "title": "Unit",
+          "type": "string"
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Limit"
+        },
+        "spent": {
+          "default": 0.0,
+          "title": "Spent",
+          "type": "number"
+        }
+      },
+      "title": "Budget",
+      "type": "object"
+    },
+    "ToolLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "higgsfield_max_clip_s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Higgsfield Max Clip S"
+        },
+        "max_attempts": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Attempts"
+        }
+      },
+      "title": "ToolLimits",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "slug": {
+      "pattern": "^[a-z0-9][a-z0-9_-]*$",
+      "title": "Slug",
+      "type": "string"
+    },
+    "brand": {
+      "default": "master-solution",
+      "title": "Brand",
+      "type": "string"
+    },
+    "target": {
+      "default": "reels",
+      "enum": [
+        "reels",
+        "tiktok",
+        "shorts"
+      ],
+      "title": "Target",
+      "type": "string"
+    },
+    "aspect": {
+      "const": "9:16",
+      "default": "9:16",
+      "title": "Aspect",
+      "type": "string"
+    },
+    "proposal_mode": {
+      "default": "auto",
+      "enum": [
+        "auto",
+        "esperar"
+      ],
+      "title": "Proposal Mode",
+      "type": "string"
+    },
+    "budget": {
+      "$ref": "#/$defs/Budget"
+    },
+    "tool_limits": {
+      "$ref": "#/$defs/ToolLimits"
+    },
+    "original": {
+      "default": "",
+      "title": "Original",
+      "type": "string"
+    },
+    "original_sha256": {
+      "default": "",
+      "title": "Original Sha256",
+      "type": "string"
+    },
+    "source_name": {
+      "default": "",
+      "title": "Source Name",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "slug"
+  ],
+  "title": "ProjectConfig",
+  "type": "object"
+}

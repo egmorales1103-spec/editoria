@@ -1,0 +1,80 @@
+{
+  "$defs": {
+    "FeedbackItem": {
+      "additionalProperties": false,
+      "properties": {
+        "t_in": {
+          "title": "T In",
+          "type": "number"
+        },
+        "t_out": {
+          "title": "T Out",
+          "type": "number"
+        },
+        "element": {
+          "default": "",
+          "title": "Element",
+          "type": "string"
+        },
+        "change": {
+          "default": "",
+          "title": "Change",
+          "type": "string"
+        },
+        "desired": {
+          "default": "",
+          "title": "Desired",
+          "type": "string"
+        }
+      },
+      "required": [
+        "t_in",
+        "t_out"
+      ],
+      "title": "FeedbackItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Parsed Feedback_V1.md (feedback.json inside the version that received it).",
+  "properties": {
+    "version": {
+      "title": "Version",
+      "type": "string"
+    },
+    "preferred": {
+      "default": "",
+      "title": "Preferred",
+      "type": "string"
+    },
+    "keep": {
+      "default": "",
+      "title": "Keep",
+      "type": "string"
+    },
+    "change": {
+      "default": "",
+      "title": "Change",
+      "type": "string"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/FeedbackItem"
+      },
+      "title": "Items",
+      "type": "array"
+    },
+    "quick_review": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Quick Review",
+      "type": "object"
+    }
+  },
+  "required": [
+    "version"
+  ],
+  "title": "Feedback",
+  "type": "object"
+}

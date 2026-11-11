@@ -1,0 +1,16 @@
+# Copiá esta carpeta a brands/<tu-marca>/ y completá. No inventes una identidad oficial:
+# si faltan colores o tipografías, dejá provisional: true.
+name: Mi Marca
+colors:
+  primary: "#FFFFFF"
+  accent: "#FFD400"
+  text: "#FFFFFF"
+  bg: "#000000"
+fonts:
+  heading: Inter
+  body: Inter
+logo: null
+provisional: true
+glossary: []
+forbidden_claims: []
+voice_notes: ""

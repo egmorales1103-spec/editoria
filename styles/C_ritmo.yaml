@@ -1,0 +1,42 @@
+id: C
+name: Ritmo y personalidad
+description: Tipografía expresiva, recortes gráficos, preguntas u opciones, pausas de reacción y acentos sonoros puntuales.
+references: [R01, R05, R09, W02]
+captions:
+  font: Inter
+  weight: 900
+  size: 76
+  case: upper
+  words_per_event: 2
+  max_chars_line: 16
+  max_lines: 2
+  max_cps: 20
+  highlight: accent
+  outline: 4
+  shadow: 2
+  animation: pop
+  position_y: 0.62
+editorial_titles:
+  font: Inter
+  weight: 700
+  size: 54
+  case: sentence
+  words_per_event: 6
+  max_chars_line: 22
+  max_lines: 2
+  max_cps: 20
+  highlight: primary
+  outline: 0
+  shadow: 0
+  animation: fade
+  position_y: 0.18
+graphics:
+  allowed_templates: [titulo_gancho, palabra_clave, chat_burbujas, notificacion, anotacion, comparacion, cta_cierre]
+  max_simultaneous: 2
+sfx:
+  max_per_10s: 4
+  min_spacing_s: 1.0
+  allowed_cues: [pop, click, whoosh, ding, impacto_suave, teclado]
+reframe:
+  cadence_s: 4.0
+  max_zoom: 1.18

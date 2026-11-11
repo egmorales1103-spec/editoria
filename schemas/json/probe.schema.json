@@ -1,0 +1,110 @@
+{
+  "$defs": {
+    "AudioInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "codec": {
+          "title": "Codec",
+          "type": "string"
+        },
+        "sr": {
+          "title": "Sr",
+          "type": "integer"
+        },
+        "ch": {
+          "title": "Ch",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "codec",
+        "sr",
+        "ch"
+      ],
+      "title": "AudioInfo",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "duration_s": {
+      "title": "Duration S",
+      "type": "number"
+    },
+    "width": {
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "title": "Height",
+      "type": "integer"
+    },
+    "fps": {
+      "title": "Fps",
+      "type": "string"
+    },
+    "vfr": {
+      "default": false,
+      "title": "Vfr",
+      "type": "boolean"
+    },
+    "rotation": {
+      "default": 0,
+      "title": "Rotation",
+      "type": "integer"
+    },
+    "has_audio": {
+      "title": "Has Audio",
+      "type": "boolean"
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AudioInfo"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "video_codec": {
+      "title": "Video Codec",
+      "type": "string"
+    },
+    "pix_fmt": {
+      "title": "Pix Fmt",
+      "type": "string"
+    },
+    "nb_frames": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Nb Frames"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "duration_s",
+    "width",
+    "height",
+    "fps",
+    "has_audio",
+    "video_codec",
+    "pix_fmt"
+  ],
+  "title": "ProbeResult",
+  "type": "object"
+}

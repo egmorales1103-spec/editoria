@@ -1,0 +1,216 @@
+{
+  "$defs": {
+    "CaptionStyle": {
+      "additionalProperties": false,
+      "properties": {
+        "font": {
+          "default": "Inter",
+          "title": "Font",
+          "type": "string"
+        },
+        "weight": {
+          "default": 700,
+          "title": "Weight",
+          "type": "integer"
+        },
+        "size": {
+          "default": 64,
+          "title": "Size",
+          "type": "integer"
+        },
+        "case": {
+          "default": "as_is",
+          "enum": [
+            "upper",
+            "lower",
+            "sentence",
+            "as_is"
+          ],
+          "title": "Case",
+          "type": "string"
+        },
+        "words_per_event": {
+          "default": 4,
+          "minimum": 1,
+          "title": "Words Per Event",
+          "type": "integer"
+        },
+        "max_chars_line": {
+          "default": 24,
+          "minimum": 4,
+          "title": "Max Chars Line",
+          "type": "integer"
+        },
+        "max_lines": {
+          "default": 2,
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Max Lines",
+          "type": "integer"
+        },
+        "max_cps": {
+          "default": 17.0,
+          "exclusiveMinimum": 0,
+          "title": "Max Cps",
+          "type": "number"
+        },
+        "highlight": {
+          "default": "accent",
+          "title": "Highlight",
+          "type": "string"
+        },
+        "outline": {
+          "default": 3.0,
+          "title": "Outline",
+          "type": "number"
+        },
+        "shadow": {
+          "default": 1.0,
+          "title": "Shadow",
+          "type": "number"
+        },
+        "animation": {
+          "default": "pop",
+          "enum": [
+            "pop",
+            "fade",
+            "none"
+          ],
+          "title": "Animation",
+          "type": "string"
+        },
+        "position_y": {
+          "default": 0.68,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Position Y",
+          "type": "number"
+        }
+      },
+      "title": "CaptionStyle",
+      "type": "object"
+    },
+    "GraphicsPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_templates": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Templates",
+          "type": "array"
+        },
+        "max_simultaneous": {
+          "default": 1,
+          "minimum": 0,
+          "title": "Max Simultaneous",
+          "type": "integer"
+        }
+      },
+      "title": "GraphicsPolicy",
+      "type": "object"
+    },
+    "ReframePolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "cadence_s": {
+          "default": 6.0,
+          "exclusiveMinimum": 0,
+          "title": "Cadence S",
+          "type": "number"
+        },
+        "max_zoom": {
+          "default": 1.15,
+          "minimum": 1.0,
+          "title": "Max Zoom",
+          "type": "number"
+        }
+      },
+      "title": "ReframePolicy",
+      "type": "object"
+    },
+    "SfxPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "max_per_10s": {
+          "default": 2,
+          "minimum": 0,
+          "title": "Max Per 10S",
+          "type": "integer"
+        },
+        "min_spacing_s": {
+          "default": 1.5,
+          "minimum": 0,
+          "title": "Min Spacing S",
+          "type": "number"
+        },
+        "allowed_cues": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Cues",
+          "type": "array"
+        }
+      },
+      "title": "SfxPolicy",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "enum": [
+        "A",
+        "B",
+        "C"
+      ],
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "references": {
+      "items": {
+        "type": "string"
+      },
+      "title": "References",
+      "type": "array"
+    },
+    "captions": {
+      "$ref": "#/$defs/CaptionStyle"
+    },
+    "editorial_titles": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CaptionStyle"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "graphics": {
+      "$ref": "#/$defs/GraphicsPolicy"
+    },
+    "sfx": {
+      "$ref": "#/$defs/SfxPolicy"
+    },
+    "reframe": {
+      "$ref": "#/$defs/ReframePolicy"
+    }
+  },
+  "required": [
+    "id",
+    "name"
+  ],
+  "title": "StylePreset",
+  "type": "object"
+}

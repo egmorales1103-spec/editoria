@@ -1,0 +1,42 @@
+id: B
+name: Explicación visual
+description: Presentación a cámara combinada con diagramas, mensajes, comparaciones e interfaces simplificadas.
+references: [R02, R04, R06, W05]
+captions:
+  font: Inter
+  weight: 700
+  size: 58
+  case: as_is
+  words_per_event: 5
+  max_chars_line: 26
+  max_lines: 2
+  max_cps: 17
+  highlight: accent
+  outline: 2.5
+  shadow: 1
+  animation: fade
+  position_y: 0.74
+editorial_titles:
+  font: Inter
+  weight: 800
+  size: 52
+  case: upper
+  words_per_event: 6
+  max_chars_line: 22
+  max_lines: 2
+  max_cps: 20
+  highlight: primary
+  outline: 0
+  shadow: 0
+  animation: fade
+  position_y: 0.18
+graphics:
+  allowed_templates: [titulo_gancho, palabra_clave, checklist, chat_burbujas, notificacion, dato_grafico, anotacion, comparacion, ui_demo, cta_cierre]
+  max_simultaneous: 2
+sfx:
+  max_per_10s: 3
+  min_spacing_s: 1.5
+  allowed_cues: [pop, click, whoosh, ding, teclado]
+reframe:
+  cadence_s: 8.0
+  max_zoom: 1.1

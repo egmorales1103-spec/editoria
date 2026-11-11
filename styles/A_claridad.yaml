@@ -1,0 +1,42 @@
+id: A
+name: Claridad profesional
+description: Subtítulos limpios, énfasis de color, acercamientos discretos y tarjetas de apoyo.
+references: [R03, R07, W01]
+captions:
+  font: Inter
+  weight: 700
+  size: 64
+  case: as_is
+  words_per_event: 4
+  max_chars_line: 24
+  max_lines: 2
+  max_cps: 17
+  highlight: accent
+  outline: 3
+  shadow: 1
+  animation: fade
+  position_y: 0.68
+editorial_titles:
+  font: Inter
+  weight: 800
+  size: 56
+  case: upper
+  words_per_event: 6
+  max_chars_line: 22
+  max_lines: 2
+  max_cps: 20
+  highlight: accent
+  outline: 0
+  shadow: 0
+  animation: fade
+  position_y: 0.2
+graphics:
+  allowed_templates: [titulo_gancho, palabra_clave, checklist, dato_grafico, comparacion, cta_cierre]
+  max_simultaneous: 1
+sfx:
+  max_per_10s: 2
+  min_spacing_s: 2.0
+  allowed_cues: [pop, click, whoosh, ding]
+reframe:
+  cadence_s: 7.0
+  max_zoom: 1.12

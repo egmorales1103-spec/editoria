@@ -1,0 +1,91 @@
+[project]
+name = "editoria"
+version = "0.1.0.dev0"
+description = "Edición de reels con IA: una CLI determinística que edita, verifica y entrega, operada por agentes de Claude Code."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE", "LICENSE-docs"]
+authors = [{ name = "EditorIA contributors" }]
+keywords = ["video-editing", "ai", "claude-code", "ffmpeg", "subtitles", "motion-graphics", "reels", "spanish"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+  "Topic :: Multimedia :: Video",
+  "Natural Language :: Spanish",
+]
+dependencies = [
+  "typer>=0.12",
+  "rich>=13.7",
+  "pydantic>=2.7",
+  "pyyaml>=6.0",
+  "numpy>=1.26",
+  "pillow>=10.3",
+  "jinja2>=3.1",
+  "httpx>=0.27",
+  "jsonschema>=4.22",
+]
+
+[project.optional-dependencies]
+transcribe = ["faster-whisper>=1.0"]
+graphics = ["playwright>=1.45"]
+analyze = ["opencv-python-headless>=4.9"]
+
+[project.scripts]
+editoria = "editoria.cli:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.2",
+  "ruff>=0.6",
+  "mypy>=1.11",
+  "respx>=0.21",
+  "pre-commit>=3.7",
+  "types-PyYAML>=6.0",
+  "types-jsonschema>=4.22",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/editoria"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+  "slow: pruebas lentas (render completo, modelos reales)",
+  "e2e: flujo de punta a punta",
+  "network: requiere red (se excluye en CI por defecto)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # el español usa caracteres ambiguos legítimos
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Argument", "typer.Option"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["B011", "E501"]
+"scripts/make_fixtures.py" = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src/editoria"]
+plugins = ["pydantic.mypy"]
+disallow_untyped_defs = true
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+ignore_missing_imports = true

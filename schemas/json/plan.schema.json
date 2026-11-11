@@ -1,0 +1,550 @@
+{
+  "$defs": {
+    "Canvas": {
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "default": 1080,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "default": 1920,
+          "title": "Height",
+          "type": "integer"
+        },
+        "fps": {
+          "default": "source",
+          "title": "Fps",
+          "type": "string"
+        },
+        "safe": {
+          "$ref": "#/$defs/SafeZone"
+        }
+      },
+      "title": "Canvas",
+      "type": "object"
+    },
+    "CaptionsSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "style": {
+          "enum": [
+            "A",
+            "B",
+            "C"
+          ],
+          "title": "Style",
+          "type": "string"
+        },
+        "emphasis": {
+          "items": {
+            "$ref": "#/$defs/Emphasis"
+          },
+          "title": "Emphasis",
+          "type": "array"
+        },
+        "editorial_titles": {
+          "items": {
+            "$ref": "#/$defs/EditorialTitle"
+          },
+          "title": "Editorial Titles",
+          "type": "array"
+        },
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "style"
+      ],
+      "title": "CaptionsSpec",
+      "type": "object"
+    },
+    "EditorialTitle": {
+      "additionalProperties": false,
+      "description": "Text that is NOT what is being said. Must use a distinct style (P13).",
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "in": {
+          "minimum": 0,
+          "title": "In",
+          "type": "number"
+        },
+        "out": {
+          "title": "Out",
+          "type": "number"
+        },
+        "zone": {
+          "default": "upper",
+          "enum": [
+            "upper",
+            "middle",
+            "lower",
+            "center",
+            "upper_left",
+            "upper_right",
+            "lower_left",
+            "lower_right",
+            "full"
+          ],
+          "title": "Zone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "in",
+        "out"
+      ],
+      "title": "EditorialTitle",
+      "type": "object"
+    },
+    "Emphasis": {
+      "additionalProperties": false,
+      "properties": {
+        "word": {
+          "minimum": 0,
+          "title": "Word",
+          "type": "integer"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Color"
+        }
+      },
+      "required": [
+        "word"
+      ],
+      "title": "Emphasis",
+      "type": "object"
+    },
+    "GraphicItem": {
+      "additionalProperties": false,
+      "description": "A template-based motion graphic OR an animated emoji overlay (exactly one).",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "template": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Template"
+        },
+        "emoji": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Emoji"
+        },
+        "in": {
+          "minimum": 0,
+          "title": "In",
+          "type": "number"
+        },
+        "out": {
+          "title": "Out",
+          "type": "number"
+        },
+        "zone": {
+          "default": "upper",
+          "enum": [
+            "upper",
+            "middle",
+            "lower",
+            "center",
+            "upper_left",
+            "upper_right",
+            "lower_left",
+            "lower_right",
+            "full"
+          ],
+          "title": "Zone",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "in",
+        "out"
+      ],
+      "title": "GraphicItem",
+      "type": "object"
+    },
+    "MixSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "target_lufs": {
+          "default": -14.0,
+          "title": "Target Lufs",
+          "type": "number"
+        },
+        "true_peak_db": {
+          "default": -1.0,
+          "title": "True Peak Db",
+          "type": "number"
+        },
+        "duck_db": {
+          "default": -10.0,
+          "title": "Duck Db",
+          "type": "number"
+        }
+      },
+      "title": "MixSpec",
+      "type": "object"
+    },
+    "MusicSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "asset_id": {
+          "title": "Asset Id",
+          "type": "string"
+        },
+        "gain_db": {
+          "default": -20.0,
+          "title": "Gain Db",
+          "type": "number"
+        }
+      },
+      "required": [
+        "path",
+        "asset_id"
+      ],
+      "title": "MusicSpec",
+      "type": "object"
+    },
+    "SafeZone": {
+      "additionalProperties": false,
+      "description": "Margins (px, at canvas resolution) kept free of captions: platform UI lives there.",
+      "properties": {
+        "top": {
+          "default": 220,
+          "title": "Top",
+          "type": "integer"
+        },
+        "bottom": {
+          "default": 420,
+          "title": "Bottom",
+          "type": "integer"
+        },
+        "left": {
+          "default": 60,
+          "title": "Left",
+          "type": "integer"
+        },
+        "right": {
+          "default": 140,
+          "title": "Right",
+          "type": "integer"
+        }
+      },
+      "title": "SafeZone",
+      "type": "object"
+    },
+    "SfxCue": {
+      "additionalProperties": false,
+      "properties": {
+        "cue": {
+          "title": "Cue",
+          "type": "string"
+        },
+        "at": {
+          "minimum": 0,
+          "title": "At",
+          "type": "number"
+        },
+        "gain_db": {
+          "default": -14.0,
+          "title": "Gain Db",
+          "type": "number"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ref"
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variant"
+        }
+      },
+      "required": [
+        "cue",
+        "at"
+      ],
+      "title": "SfxCue",
+      "type": "object"
+    },
+    "VideoInterval": {
+      "additionalProperties": false,
+      "description": "Interval on the VIDEO_BASE timeline. `in`/`out` are seconds of the base video.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "in": {
+          "minimum": 0,
+          "title": "In",
+          "type": "number"
+        },
+        "out": {
+          "minimum": 0,
+          "title": "Out",
+          "type": "number"
+        },
+        "method": {
+          "enum": [
+            "original",
+            "reframe",
+            "generated"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "zoom": {
+          "anyOf": [
+            {
+              "minimum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Zoom"
+        },
+        "anchor": {
+          "anyOf": [
+            {
+              "enum": [
+                "face",
+                "center",
+                "point"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Anchor"
+        },
+        "point": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Point"
+        },
+        "motion": {
+          "anyOf": [
+            {
+              "enum": [
+                "cut",
+                "push"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Motion"
+        },
+        "shot": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shot"
+        }
+      },
+      "required": [
+        "id",
+        "in",
+        "out",
+        "method"
+      ],
+      "title": "VideoInterval",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "editoria/plan@1",
+      "default": "editoria/plan@1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^V\\d+$",
+      "title": "Version",
+      "type": "string"
+    },
+    "style": {
+      "enum": [
+        "A",
+        "B",
+        "C"
+      ],
+      "title": "Style",
+      "type": "string"
+    },
+    "brand": {
+      "title": "Brand",
+      "type": "string"
+    },
+    "canvas": {
+      "$ref": "#/$defs/Canvas"
+    },
+    "video": {
+      "items": {
+        "$ref": "#/$defs/VideoInterval"
+      },
+      "title": "Video",
+      "type": "array"
+    },
+    "captions": {
+      "$ref": "#/$defs/CaptionsSpec"
+    },
+    "graphics": {
+      "items": {
+        "$ref": "#/$defs/GraphicItem"
+      },
+      "title": "Graphics",
+      "type": "array"
+    },
+    "sfx": {
+      "items": {
+        "$ref": "#/$defs/SfxCue"
+      },
+      "title": "Sfx",
+      "type": "array"
+    },
+    "music": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MusicSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "mix": {
+      "$ref": "#/$defs/MixSpec"
+    },
+    "notes": {
+      "default": "",
+      "title": "Notes",
+      "type": "string"
+    },
+    "window": {
+      "anyOf": [
+        {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Window"
+    }
+  },
+  "required": [
+    "version",
+    "style",
+    "brand",
+    "captions"
+  ],
+  "title": "EditPlan",
+  "type": "object"
+}

@@ -1,0 +1,99 @@
+{
+  "$defs": {
+    "Segment": {
+      "additionalProperties": false,
+      "description": "Editorial segment of the VIDEO_BASE (sentence/pause based). Roles filled by the director.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "start": {
+          "title": "Start",
+          "type": "number"
+        },
+        "end": {
+          "title": "End",
+          "type": "number"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "enum": [
+                "hook",
+                "body",
+                "example",
+                "closing"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Role"
+        },
+        "intent": {
+          "default": "",
+          "title": "Intent",
+          "type": "string"
+        },
+        "visual": {
+          "default": "",
+          "title": "Visual",
+          "type": "string"
+        },
+        "reference": {
+          "default": "",
+          "title": "Reference",
+          "type": "string"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "enum": [
+                "original",
+                "reframe",
+                "generated"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Method"
+        }
+      },
+      "required": [
+        "id",
+        "start",
+        "end",
+        "text"
+      ],
+      "title": "Segment",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "segments": {
+      "items": {
+        "$ref": "#/$defs/Segment"
+      },
+      "title": "Segments",
+      "type": "array"
+    }
+  },
+  "required": [
+    "segments"
+  ],
+  "title": "SegmentList",
+  "type": "object"
+}

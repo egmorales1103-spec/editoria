@@ -1,0 +1,102 @@
+{
+  "$defs": {
+    "BrandColors": {
+      "additionalProperties": false,
+      "properties": {
+        "primary": {
+          "default": "#111111",
+          "title": "Primary",
+          "type": "string"
+        },
+        "accent": {
+          "default": "#FFD400",
+          "title": "Accent",
+          "type": "string"
+        },
+        "text": {
+          "default": "#FFFFFF",
+          "title": "Text",
+          "type": "string"
+        },
+        "bg": {
+          "default": "#000000",
+          "title": "Bg",
+          "type": "string"
+        }
+      },
+      "title": "BrandColors",
+      "type": "object"
+    },
+    "BrandFonts": {
+      "additionalProperties": false,
+      "properties": {
+        "heading": {
+          "default": "Inter",
+          "title": "Heading",
+          "type": "string"
+        },
+        "body": {
+          "default": "Inter",
+          "title": "Body",
+          "type": "string"
+        }
+      },
+      "title": "BrandFonts",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "colors": {
+      "$ref": "#/$defs/BrandColors"
+    },
+    "fonts": {
+      "$ref": "#/$defs/BrandFonts"
+    },
+    "logo": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Logo"
+    },
+    "provisional": {
+      "default": true,
+      "title": "Provisional",
+      "type": "boolean"
+    },
+    "glossary": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Glossary",
+      "type": "array"
+    },
+    "forbidden_claims": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Forbidden Claims",
+      "type": "array"
+    },
+    "voice_notes": {
+      "default": "",
+      "title": "Voice Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "title": "BrandProfile",
+  "type": "object"
+}

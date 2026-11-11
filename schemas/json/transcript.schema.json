@@ -1,0 +1,111 @@
+{
+  "$defs": {
+    "TranscriptSegment": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "title": "Start",
+          "type": "number"
+        },
+        "end": {
+          "title": "End",
+          "type": "number"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "first_word": {
+          "title": "First Word",
+          "type": "integer"
+        },
+        "last_word": {
+          "title": "Last Word",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "text",
+        "first_word",
+        "last_word"
+      ],
+      "title": "TranscriptSegment",
+      "type": "object"
+    },
+    "Word": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "start": {
+          "title": "Start",
+          "type": "number"
+        },
+        "end": {
+          "title": "End",
+          "type": "number"
+        },
+        "prob": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Prob",
+          "type": "number"
+        },
+        "flagged": {
+          "default": false,
+          "title": "Flagged",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text",
+        "start",
+        "end",
+        "prob"
+      ],
+      "title": "Word",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "language": {
+      "default": "es",
+      "title": "Language",
+      "type": "string"
+    },
+    "model": {
+      "title": "Model",
+      "type": "string"
+    },
+    "words": {
+      "items": {
+        "$ref": "#/$defs/Word"
+      },
+      "title": "Words",
+      "type": "array"
+    },
+    "segments": {
+      "items": {
+        "$ref": "#/$defs/TranscriptSegment"
+      },
+      "title": "Segments",
+      "type": "array"
+    },
+    "audio_sha256": {
+      "default": "",
+      "title": "Audio Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "model",
+    "words"
+  ],
+  "title": "Transcript",
+  "type": "object"
+}

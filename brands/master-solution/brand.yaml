@@ -1,0 +1,30 @@
+name: Master Solution
+colors:
+  primary: "#FFFFFF"
+  accent: "#FFD400"   # PROPUESTA provisional: no es un color oficial de la marca
+  text: "#FFFFFF"
+  bg: "#000000"
+fonts:
+  heading: Inter
+  body: Inter
+logo: null
+provisional: true
+glossary:
+  - IA
+  - inteligencia artificial
+  - automatización
+  - automatizar
+  - procesos
+  - flujo de trabajo
+  - ChatGPT
+  - Claude
+  - agente
+  - CRM
+  - Master Solution
+forbidden_claims:
+  - reemplaza empleados
+  - dinero fácil
+  - negocio que funciona solo
+voice_notes: >-
+  Cercana, clara y profesional. La tecnología facilita la vida del equipo; no se presenta la IA
+  como sustitución de empleos ni con promesas de dinero fácil.

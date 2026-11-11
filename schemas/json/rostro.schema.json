@@ -1,0 +1,102 @@
+{
+  "$defs": {
+    "Box": {
+      "additionalProperties": false,
+      "description": "Axis-aligned rectangle in pixels. The coordinate space is stated by the owner field.",
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "integer"
+        },
+        "y": {
+          "title": "Y",
+          "type": "integer"
+        },
+        "w": {
+          "minimum": 0,
+          "title": "W",
+          "type": "integer"
+        },
+        "h": {
+          "minimum": 0,
+          "title": "H",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "w",
+        "h"
+      ],
+      "title": "Box",
+      "type": "object"
+    },
+    "FaceSample": {
+      "additionalProperties": false,
+      "properties": {
+        "t": {
+          "title": "T",
+          "type": "number"
+        },
+        "box": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Box"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "t",
+        "box"
+      ],
+      "title": "FaceSample",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Face boxes in SOURCE pixel coordinates (frame_w x frame_h, after rotation).",
+  "properties": {
+    "frame_w": {
+      "title": "Frame W",
+      "type": "integer"
+    },
+    "frame_h": {
+      "title": "Frame H",
+      "type": "integer"
+    },
+    "samples": {
+      "items": {
+        "$ref": "#/$defs/FaceSample"
+      },
+      "title": "Samples",
+      "type": "array"
+    },
+    "union_box": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Box"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "estimated": {
+      "default": false,
+      "title": "Estimated",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "frame_w",
+    "frame_h"
+  ],
+  "title": "FaceTrack",
+  "type": "object"
+}

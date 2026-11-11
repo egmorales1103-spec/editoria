@@ -1,0 +1,81 @@
+{
+  "$defs": {
+    "AssetEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "sfx",
+            "font",
+            "emoji",
+            "music"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "license": {
+          "title": "License",
+          "type": "string"
+        },
+        "license_url": {
+          "default": "",
+          "title": "License Url",
+          "type": "string"
+        },
+        "author": {
+          "default": "",
+          "title": "Author",
+          "type": "string"
+        },
+        "source_url": {
+          "default": "",
+          "title": "Source Url",
+          "type": "string"
+        },
+        "sha256": {
+          "default": "",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "attribution": {
+          "default": "",
+          "title": "Attribution",
+          "type": "string"
+        },
+        "suggested_use": {
+          "default": "",
+          "title": "Suggested Use",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "kind",
+        "license"
+      ],
+      "title": "AssetEntry",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assets": {
+      "items": {
+        "$ref": "#/$defs/AssetEntry"
+      },
+      "title": "Assets",
+      "type": "array"
+    }
+  },
+  "title": "AssetManifest",
+  "type": "object"
+}
