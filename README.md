@@ -115,7 +115,7 @@ Resumen: original intacto, audio base manda, sin publicación automática, sin g
 
 ## Tomas generadas con Higgsfield
 
-Son **opcionales** y se manejan en modo manual asistido: `shots pack` prepara el segmento y el prompt, vos lo ejecutás en la herramienta, `shots import` valida el resultado, `shots compare` mide la deriva del fondo y `shots verdict` es la única vía para aceptar una toma. Un cliente de API experimental existe, apagado por defecto y con presupuesto obligatorio. Qué está verificado y qué no: [docs/higgsfield.md](docs/higgsfield.md) y [ADR-0003](docs/adr/0003-higgsfield-manual.md). Sin tomas generadas, la V1 se hace con original y reencuadres y se declara así.
+Son **opcionales** y se manejan en modo manual asistido: `shots pack` prepara el segmento y el prompt, vos lo ejecutás en la herramienta, `shots import` valida el resultado, `shots compare` mide la deriva del fondo y `shots verdict` es la única vía para aceptar una toma. No hay cliente de API en v0.1: no se pudo verificar un modelo de video a video con estimación de costo en la documentación oficial (ver docs/higgsfield.md). Qué está verificado y qué no: [docs/higgsfield.md](docs/higgsfield.md) y [ADR-0003](docs/adr/0003-higgsfield-manual.md). Sin tomas generadas, la V1 se hace con original y reencuadres y se declara así.
 
 ## Limitaciones honestas
 

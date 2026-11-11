@@ -8,9 +8,10 @@ from pathlib import Path
 
 import pytest
 
-from editoria.schemas import ProjectConfig, write_model
+from editoria.schemas import CutList, ProjectConfig, write_model
 from editoria.util.files import make_read_only, sha256_file
 from editoria.util.project import (
+    CUTS_FILE,
     FACE_FILE,
     PROBE_FILE,
     SEGMENTS_FILE,
@@ -87,4 +88,5 @@ def fixture_project(fixtures_dir: Path, projects_dir: Path) -> ProjectContext:
         (SEGMENTS_FILE, "segmentos_fixture.json"),
     ):
         shutil.copy2(fixtures_dir / fixture, ctx.analysis(name))
+    write_model(ctx.analysis(CUTS_FILE), CutList(cuts=[4.0, 7.85]))
     return ctx

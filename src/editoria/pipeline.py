@@ -200,7 +200,9 @@ def build_inputs(
     # 1. captions
     if plan.captions.enabled:
         cap_style = ctx.load_style(plan.captions.style)
-        rep.captions = AssCaptionBuilder().build(
+        cuts = ctx.load_cuts()
+        builder = AssCaptionBuilder()
+        rep.captions = builder.build(
             ctx.load_transcript(),
             cap_style,
             brand,
@@ -208,7 +210,12 @@ def build_inputs(
             [face] if face else [],
             plan.captions.emphasis,
             work,
+            cuts=cuts.cuts if cuts else (),
+            editorial_titles=plan.captions.editorial_titles,
+            duration=probe.duration_s,
         )
+        for w in builder.warnings:
+            log.warn(w)
         events_json = work / "subtitulos.json"
         if not events_json.exists():
             events_json.write_text(
@@ -254,7 +261,10 @@ def build_inputs(
     used = {iv.shot for iv in plan.video if iv.method == "generated" and iv.shot}
     rep.shots = sorted(used & set(shots))
 
-    fd = fonts_dir()
+    # libass scans fontsdir non-recursively: point it at the brand font family folder.
+    fd = fonts_dir() / brand.fonts.body
+    if not fd.is_dir():
+        fd = fonts_dir()
     inputs = RenderInputs(
         captions_ass=rep.captions.ass if rep.captions else None,
         fonts_dir=fd if fd.exists() else None,

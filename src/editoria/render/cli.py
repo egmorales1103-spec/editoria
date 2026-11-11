@@ -32,8 +32,14 @@ def register(app: typer.Typer) -> None:
             None, "--preset", help="Preset de x264 (medium; veryfast para muestras)."
         ),
         crf: int = typer.Option(18, "--crf"),
+        solo_componer: bool = typer.Option(
+            False,
+            "--solo-componer",
+            help="Solo compone con las capas ya generadas (sin lint, subtítulos, gráficos, "
+            "mezcla ni QC).",
+        ),
     ) -> None:
-        """Compone y exporta el MP4 de una versión."""
+        """Renderiza una versión: lint → subtítulos → gráficos → mezcla → composición → QC."""
         from editoria.render.filtergraph import RenderError
         from editoria.render.inputs import inputs_from_version
         from editoria.render.renderer import FFmpegRenderer
@@ -52,6 +58,24 @@ def register(app: typer.Typer) -> None:
                 window = parse_window(sample_window)
             except ValueError as exc:
                 fail(str(exc))
+        if window is None and not solo_componer:
+            from editoria.pipeline import PipelineError, render_version
+
+            with command_log(ctx.commands_log):
+                try:
+                    path, report = render_version(
+                        ctx, version, EncodeSettings(preset=preset or "medium", crf=crf)
+                    )
+                except (PipelineError, RenderError, ValueError, FileNotFoundError) as exc:
+                    fail(str(exc))
+                except (FFmpegError, FFmpegNotFound) as exc:
+                    fail(f"ffmpeg falló durante el render: {exc}")
+            ok(f"Video escrito: {path}")
+            counts = report.counts()
+            info("QC: " + " · ".join(f"{k}: {v}" for k, v in counts.items()))
+            if report.has_fail:
+                fail(f"El QC tiene FAIL: revisá {vdir / 'qc' / 'qc.md'}")
+            return
         if window is None:
             out = vdir / VIDEO_FILE
         else:

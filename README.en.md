@@ -54,7 +54,7 @@ Output goes to `proyectos/my-video/` (git-ignored). The repository ships no medi
 
 - Template quality does not compete with a human editor: v0.1 ships 8 graphics templates and 3 styles.
 - Identity, background and lip-sync are **not** verified automatically; QC flags them for human review.
-- Generated shots (Higgsfield) are optional, manual-assisted and unverified end to end; an experimental API client is off by default and requires a budget.
+- Generated shots (Higgsfield) are optional, manual-assisted and unverified end to end; there is no API client in v0.1 (no verified video-to-video model with cost estimation).
 - No CapCut project export, no publishing, no bundled music, no GUI.
 
 ## Licences
