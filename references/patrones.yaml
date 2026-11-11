@@ -1,0 +1,127 @@
+# Patrones de edición R01–R09, descritos solo en texto.
+# Son observaciones de técnica (qué se hace y para qué), no copias de ninguna pieza.
+# No hay archivos, capturas ni enlaces a publicaciones, y no se nombra a sus autores.
+# Sirven de vocabulario común para el director creativo, los estilos A/B/C y el campo
+# "referencia" del mapa de edición. Reglas del producto que prevalecen sobre cualquier patrón:
+# no cambiar fondo ni identidad, no alterar la voz, no inventar datos.
+schema: editoria/patrones@1
+patrones:
+  - id: R01
+    nombre: Conversación entre dos personajes
+    resumen: Alternancia de interlocutores con texto breve y rótulos pequeños de apoyo.
+    que_se_observa:
+      - Dos encuadres que alternan según quién habla; el cambio de plano marca el cambio de turno.
+      - Texto corto por turno, colocado junto al rostro y no sobre él, a veces con una palabra en color.
+      - Rótulos pequeños tipo etiqueta (por ejemplo, cuántas personas vieron algo) como apoyo al argumento.
+    elementos: [alternancia de planos, subtítulo lateral corto, etiquetas de apoyo]
+    cuando_usarlo: Contenido que simula o relata un diálogo, o que contrasta dos posiciones.
+    cuidados: Solo con material propio de ambos planos; no se simula a otra persona ni se genera una voz.
+    estilos: [C]
+    plantillas_relacionadas: [chat_burbujas, notificacion]
+  - id: R02
+    nombre: Explicación de herramientas a cámara
+    resumen: Persona a cámara con pasos y diagramas que aparecen a medida que explica.
+    que_se_observa:
+      - Encuadre de busto estable; el gráfico ocupa el tercio inferior o superior sin tapar el rostro.
+      - Lista de pasos numerados que entra de a uno ("1 · …", "2 · …") sincronizada con la frase.
+      - Tarjetas con borde y un icono simple para cada herramienta o etapa de un flujo.
+      - Subtítulo de una línea con una palabra destacada, mientras el gráfico explica el detalle.
+    elementos: [lista numerada animada, tarjetas de flujo, subtítulo de una línea, icono simple]
+    cuando_usarlo: Explicar un proceso, un flujo de trabajo o una herramienta paso a paso.
+    cuidados: Los nombres de herramientas deben ser los reales; no mostrar funciones que no existen.
+    estilos: [B]
+    plantillas_relacionadas: [checklist, anotacion, ui_demo]
+  - id: R03
+    nombre: Entrevista con subtítulos de una palabra
+    resumen: Encuadre cercano con subtítulos grandes en mayúsculas y una palabra resaltada en amarillo.
+    que_se_observa:
+      - Primer plano que llena el cuadro; el texto se ubica en el tercio medio-inferior.
+      - Un evento por una o dos palabras, en mayúsculas, con contorno grueso para el contraste.
+      - Color de énfasis (amarillo) en la palabra clave; el resto en blanco.
+      - Cadencia rápida: el texto cambia casi con cada palabra, sincronizado con el habla.
+    elementos: [subtítulo en mayúsculas, palabra destacada, primer plano]
+    cuando_usarlo: Entrevistas o monólogos con ritmo alto donde el texto sostiene la atención.
+    cuidados: No tapar la boca ni el rostro; mantener la posición estable dentro de la zona segura.
+    estilos: [A, C]
+    plantillas_relacionadas: [palabra_clave]
+  - id: R04
+    nombre: Montaje de diseño con tipografía en tensión
+    resumen: Primeros planos y composiciones gráficas con tipografía como elemento principal.
+    que_se_observa:
+      - Cortes rápidos entre planos detalle y composiciones con mucho espacio negativo.
+      - Paleta muy limitada (blanco, negro y un rojo dominante) con texto pequeño y técnico superpuesto.
+      - Textos que se desplazan o se deslizan al entrar, alineados a una cuadrícula visible.
+    elementos: [cortes rápidos, paleta limitada, texto pequeño superpuesto, entrada por deslizamiento]
+    cuando_usarlo: Aperturas, transiciones de bloque o piezas sobre diseño y marca.
+    cuidados: >-
+      Es un lenguaje de montaje sobre imágenes de archivo; con un solo plano a cámara se
+      traduce en tipografía y paleta, no en cortes de material ajeno.
+    estilos: [B]
+    plantillas_relacionadas: [titulo_gancho]
+  - id: R05
+    nombre: Texto protagonista
+    resumen: Las palabras clave se vuelven el elemento principal, con jerarquía de tamaños y color.
+    que_se_observa:
+      - Una frase en dos o tres líneas con tamaños muy distintos: la palabra importante, grande.
+      - Color de énfasis vivo (verde lima o amarillo) sobre blanco; las palabras menores, pequeñas y apagadas.
+      - Pequeños elementos gráficos (una flecha, un subrayado, un tachado) que refuerzan una idea.
+      - Transiciones breves con trama de líneas entre ideas distintas.
+    elementos: [jerarquía de tamaños, color de énfasis, icono pequeño, transición de trama]
+    cuando_usarlo: Frases con una idea fuerte, contrastes o definiciones.
+    cuidados: Muchos tamaños a la vez cansan; limitar a una palabra grande por evento.
+    estilos: [C]
+    plantillas_relacionadas: [palabra_clave, anotacion]
+  - id: R06
+    nombre: Motion graphics de tarjetas y cifras
+    resumen: Composiciones animadas con tarjetas, maquetas de teléfono y cifras grandes.
+    que_se_observa:
+      - Una cifra grande sobre una tarjeta de color que se "dibuja" (barras o líneas que crecen).
+      - Maquetas de pantalla de teléfono que entran con una ligera rotación y se alejan al terminar.
+      - Texto de titular dividido en palabras con distinta tipografía y color, sobre fondo claro o muy oscuro.
+      - Entradas y salidas suaves; una sola composición por momento.
+    elementos: [cifra grande, tarjeta animada, maqueta de pantalla, titular dividido]
+    cuando_usarlo: Explicar un número, un resultado o una interfaz sin tener capturas.
+    cuidados: >-
+      Las cifras deben ser reales o rotularse "Ejemplo"; una interfaz recreada se rotula
+      "Ilustración".
+    estilos: [B]
+    plantillas_relacionadas: [dato_grafico, ui_demo, notificacion, comparacion]
+  - id: R07
+    nombre: Variación de encuadres y comparación con el original
+    resumen: Vista dividida que compara el original con una variante de encuadre generada.
+    que_se_observa:
+      - Pantalla partida: arriba la variante, abajo el original con una etiqueta "VIDEO ORIGINAL".
+      - Variaciones de encuadre moderadas (más cerca, más abierto) sobre el mismo discurso.
+      - La etiqueta de procedencia evita confundir lo generado con lo grabado.
+    elementos: [pantalla partida, etiqueta de procedencia, variación de encuadre]
+    cuando_usarlo: Para comparar un reencuadre o una toma generada contra el original antes de aceptarla.
+    cuidados: >-
+      Es el patrón detrás de `shots compare`. La comparación es una herramienta de revisión;
+      una variante que cambie fondo o identidad se descarta.
+    estilos: [A]
+    plantillas_relacionadas: [comparacion]
+  - id: R08
+    nombre: Composición cinematográfica horizontal
+    resumen: Imagen ancha centrada en un entorno con movimiento amplio, con franjas negras.
+    que_se_observa:
+      - Imagen horizontal dentro de un cuadro vertical, con franjas arriba y abajo.
+      - Movimiento de sujeto y cámara amplio; poco texto en pantalla.
+    elementos: [encuadre ancho, franjas, poco texto]
+    cuando_usarlo: Casi nunca en este producto; es solo una referencia de atmósfera.
+    cuidados: >-
+      El prompt prohíbe las bandas cinematográficas por rutina en video vertical; no se
+      aplica por defecto ni como estilo A/B/C.
+    estilos: []
+    plantillas_relacionadas: []
+  - id: R09
+    nombre: Preguntas y reacciones
+    resumen: Subtítulos en mayúsculas para preguntas, con una palabra clave resaltada y pausas de reacción.
+    que_se_observa:
+      - Subtítulo en blanco con contorno negro, en el tercio medio, de dos a cuatro palabras por evento.
+      - La palabra que sostiene la pregunta o el nombre propio va en color de acento.
+      - Pausas breves de reacción (un segundo sin texto nuevo) antes de la respuesta.
+    elementos: [subtítulo de pregunta, palabra destacada, pausa de reacción]
+    cuando_usarlo: Contenido con preguntas, opciones o respuestas rápidas.
+    cuidados: No forzar el formato de preguntas si el contenido no las tiene.
+    estilos: [C]
+    plantillas_relacionadas: [palabra_clave, chat_burbujas]

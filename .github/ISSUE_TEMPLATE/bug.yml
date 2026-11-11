@@ -1,0 +1,60 @@
+name: Reportar un error
+description: Algo no funciona como se espera.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por reportarlo. **No adjuntes videos ni material de terceros ni datos personales**: describí el problema y pegá solo la salida de texto relevante. Para vulnerabilidades, no uses este formulario (ver SECURITY.md).
+  - type: textarea
+    id: que-paso
+    attributes:
+      label: Qué pasó
+      description: Qué esperabas y qué ocurrió en cambio.
+    validations:
+      required: true
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Cómo reproducirlo
+      description: Comandos exactos que ejecutaste (sin rutas personales si preferís).
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: salida
+    attributes:
+      label: Salida o mensaje de error
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Versión de EditorIA
+      description: Salida de `uv run editoria --version`.
+    validations:
+      required: true
+  - type: dropdown
+    id: so
+    attributes:
+      label: Sistema operativo
+      options: [Windows, macOS, Linux]
+    validations:
+      required: true
+  - type: textarea
+    id: entorno
+    attributes:
+      label: Entorno
+      description: Pegá la salida de `uv run editoria doctor` (FFmpeg, Chromium, etc.).
+      render: text
+  - type: textarea
+    id: video
+    attributes:
+      label: Características del video (no el archivo)
+      description: Duración, resolución, FPS, orientación, si tiene audio. Si es posible reproducirlo con los medios sintéticos de `scripts/make_fixtures.py`, indicalo.
+  - type: checkboxes
+    id: confirmaciones
+    attributes:
+      label: Confirmaciones
+      options:
+        - label: No adjunté videos, fotogramas ni datos personales
+          required: true

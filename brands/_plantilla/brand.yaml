@@ -1,16 +1,21 @@
-# Copiá esta carpeta a brands/<tu-marca>/ y completá. No inventes una identidad oficial:
-# si faltan colores o tipografías, dejá provisional: true.
+# Plantilla de marca. Copiá esta carpeta a brands/<tu-marca>/ y completá.
+# No inventes una identidad oficial: si faltan colores o tipografías, dejá provisional: true
+# y usá blanco, negro y un único acento que declares como propuesta.
+# Validación: uv run python -c "from editoria.util.resources import load_brand; load_brand('<tu-marca>')"
 name: Mi Marca
 colors:
   primary: "#FFFFFF"
-  accent: "#FFD400"
+  accent: "#FFD400"   # un solo acento; si es propuesta, decilo acá
   text: "#FFFFFF"
   bg: "#000000"
 fonts:
-  heading: Inter
+  heading: Inter      # fuentes libres (OFL) o con licencia propia; las descarga scripts/fetch_assets.py
   body: Inter
-logo: null
+logo: null            # ruta relativa a un logo propio (no lo versiones si no tenés permiso)
 provisional: true
+# Términos propios de tu rubro (nombres de producto, siglas, marcas): ayudan a la transcripción.
 glossary: []
+# Frases que no querés que aparezcan en gráficos ni títulos. Ejemplos: promesas de resultados,
+# comparaciones con competidores, afirmaciones que no podés respaldar.
 forbidden_claims: []
 voice_notes: ""

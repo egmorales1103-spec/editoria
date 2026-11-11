@@ -1,0 +1,47 @@
+name: Plantilla de gráficos nueva
+description: Proponer una plantilla de motion graphics.
+labels: ["plantilla"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Las plantillas son HTML/CSS renderizados con Playwright (ver CONTRIBUTING.md). **No adjuntes material de terceros**: describí la idea con palabras o con un boceto propio.
+  - type: input
+    id: id
+    attributes:
+      label: Identificador propuesto
+      description: En minúsculas y con guion bajo, por ejemplo `linea_tiempo`.
+    validations:
+      required: true
+  - type: textarea
+    id: que-explica
+    attributes:
+      label: Qué idea del discurso explica
+      description: Para qué sirve, en qué tipo de contenido aparece y qué aporta (claridad, ritmo, énfasis).
+    validations:
+      required: true
+  - type: textarea
+    id: parametros
+    attributes:
+      label: Parámetros
+      description: Qué datos recibe (nombre, tipo, obligatorio o no).
+    validations:
+      required: true
+  - type: textarea
+    id: honestidad
+    attributes:
+      label: Etiquetas y datos
+      description: ¿Muestra datos (exige `data_source` y etiqueta "Ejemplo")? ¿Recrea una interfaz (etiqueta "Ilustración")? ¿Usa marcas de terceros? (No debería.)
+  - type: dropdown
+    id: estilos
+    attributes:
+      label: Estilos donde encaja
+      multiple: true
+      options: [A · Claridad profesional, B · Explicación visual, C · Ritmo y personalidad]
+  - type: dropdown
+    id: implementar
+    attributes:
+      label: ¿Querés implementarla?
+      options: [Sí, abriré un PR, Necesito ayuda, Solo es una idea]
+    validations:
+      required: true

@@ -1,7 +1,15 @@
+# Estilo A — Claridad profesional.
+# Pensado para contenido de negocio explicado a cámara: el texto acompaña, no compite.
+# Referencias en references/patrones.yaml (R03, R07) y references/web.yaml (W01, W09, W10).
 id: A
 name: Claridad profesional
-description: Subtítulos limpios, énfasis de color, acercamientos discretos y tarjetas de apoyo.
-references: [R03, R07, W01]
+description: >-
+  Subtítulos limpios en una o dos líneas, con una sola palabra de énfasis en el color de acento
+  (patrón R03, sin mayúsculas forzadas). Acercamientos discretos y poco frecuentes sobre los píxeles
+  existentes (idea de R07, solo reencuadre). Un único gráfico a la vez, sobrio: palabra clave,
+  checklist, comparación o dato con su origen. Sonido mínimo: pop o click en la entrada de un
+  gráfico, whoosh solo en un reencuadre marcado.
+references: [R03, R07, W01, W09, W10]
 captions:
   font: Inter
   weight: 700

@@ -1,0 +1,131 @@
+# Referencias web W01–W25: solo enlaces y notas propias. No se descargó ni se redistribuye nada.
+# Los recursos web conservan sus derechos y condiciones: una previsualización no es una licencia
+# de plantilla. Consultá la licencia del recurso al incorporarlo.
+# Verificado el 8 de noviembre de 2026; los enlaces pueden cambiar o desaparecer.
+schema: editoria/web@1
+referencias:
+  - id: W01
+    categoria: Subtítulos
+    url: https://www.kapwing.com/explore/hormozi-style-captions-template
+    relacion: [R03]
+    nota: Mayúsculas y énfasis de palabra.
+  - id: W02
+    categoria: Subtítulos
+    url: https://www.kapwing.com/explore/mr-beast-subtites-template
+    relacion: [R09]
+    nota: Subtítulos para preguntas y reacciones.
+  - id: W03
+    categoria: Subtítulos
+    url: https://www.kapwing.com/explore/multi-font-subtitles-template
+    relacion: [R05]
+    nota: Comparar jerarquías y combinaciones tipográficas.
+  - id: W04
+    categoria: Tipografía
+    url: https://jitter.video/template/sliding-text-reveal/
+    relacion: [R04, R06]
+    nota: Entrada de un título por desplazamiento.
+  - id: W05
+    categoria: Tipografía
+    url: https://jitter.video/templates/text/
+    relacion: [R04, R05, R06]
+    nota: Texto elástico, máscaras y títulos.
+  - id: W06
+    categoria: Interfaces
+    url: https://jitter.video/templates/ui-elements/
+    relacion: [R02, R06]
+    nota: Botones, tarjetas y elementos de interfaz.
+  - id: W07
+    categoria: Interfaces
+    url: https://jitter.video/template/animated-text-messages/
+    relacion: [R01, R06]
+    nota: Burbujas de conversación.
+  - id: W08
+    categoria: Interfaces
+    url: https://jitter.video/template/new-message-notification-ios/
+    relacion: [R02, R06]
+    nota: Entrada de una notificación.
+  - id: W09
+    categoria: Comparación
+    url: https://jitter.video/template/before-after-side-by-side/
+    relacion: [R07]
+    nota: Comparación simultánea de dos versiones.
+  - id: W10
+    categoria: Gráficos
+    url: https://jitter.video/templates/charts/
+    relacion: [R02, R06]
+    nota: Barras, líneas y porcentajes; con datos reales o ejemplos etiquetados.
+  - id: W11
+    categoria: Composición
+    url: https://jitter.video/templates/social-media/
+    relacion: [R04, R06, R08]
+    nota: Tarjetas, collages, presentaciones y testimonios.
+  - id: W12
+    categoria: Emojis
+    url: https://googlefonts.github.io/noto-emoji-animation/
+    relacion: [R05, R09]
+    nota: Emojis animados Noto; EditorIA usa seis (E01 a E06) que descarga scripts/fetch_assets.py.
+  - id: W13
+    categoria: Iconos
+    url: https://lordicon.com/
+    relacion: [R02, R05, R06]
+    nota: Iconos de tiempo, equipo, documentos, dinero y confirmación. Revisar su licencia antes de usarlos.
+  - id: W14
+    categoria: Transiciones
+    url: https://mixkit.co/free-premiere-pro-templates/transitions/
+    relacion: [R04, R08]
+    nota: Referencias de transiciones; las plantillas son para otro editor.
+  - id: W15
+    categoria: Sonido
+    url: https://mixkit.co/free-sound-effects/pop/
+    relacion: [R05, R06]
+    nota: Referencia de sonidos tipo pop. EditorIA usa SFX propios sintetizados (CC0).
+  - id: W16
+    categoria: Sonido
+    url: https://mixkit.co/free-sound-effects/whoosh/
+    relacion: [R04, R06, R07]
+    nota: Referencia de whoosh para transiciones y desplazamientos.
+  - id: W17
+    categoria: Sonido
+    url: https://mixkit.co/free-sound-effects/click/
+    relacion: [R02, R09]
+    nota: Selección, botón o entrada de una opción.
+  - id: W18
+    categoria: Sonido
+    url: https://mixkit.co/free-sound-effects/ding/
+    relacion: [R02, R09]
+    nota: Confirmación o respuesta correcta.
+  - id: W19
+    categoria: Sonido
+    url: https://mixkit.co/free-sound-effects/keyboard/
+    relacion: [R02, R06]
+    nota: Escritura de una búsqueda, un mensaje o un prompt.
+  - id: W20
+    categoria: Sonido
+    url: https://mixkit.co/free-sound-effects/impact/
+    relacion: [R04, R06]
+    nota: Acento sobre una cifra o una conclusión.
+  - id: W21
+    categoria: Tendencias
+    url: https://ads.tiktok.com/creative/creativeCenter/trends
+    relacion: []
+    nota: Para consultar tendencias actuales. No hay un ranking verificado de efectos de sonido para Costa Rica.
+  - id: W22
+    categoria: Tutorial
+    url: https://www.youtube.com/watch?v=1e-osPtdM7Y
+    relacion: [R02, R05]
+    nota: Tutorial de edición de videos cortos; es un enlace, no hay video descargado.
+  - id: W23
+    categoria: Producción
+    url: https://higgsfield.ai/blog/how-to-edit-videos-with-ai
+    relacion: [R07]
+    nota: Documentación del proveedor sobre edición con IA; verificar funciones, revisión visual y costos al ejecutar.
+  - id: W24
+    categoria: Licencia
+    url: https://googlefonts.github.io/noto-emoji-files/?view=docs
+    relacion: [W12]
+    nota: Documentación de Noto Emoji; licencia CC BY 4.0 para las animaciones.
+  - id: W25
+    categoria: Sonido
+    url: https://www.storycut.com/blog/how-to-add-sound-effects-to-tiktok
+    relacion: []
+    nota: Guía sobre usos habituales de efectos en Reels y Shorts; no prueba un ranking de viralidad.

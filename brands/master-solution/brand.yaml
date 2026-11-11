@@ -1,3 +1,7 @@
+# Marca provisional de Master Solution.
+# Los colores y la tipografía NO son identidad oficial: son una propuesta mínima
+# (blanco, negro y un único acento) hasta que la marca aporte logo, paleta y fuentes.
+# Cuando eso ocurra: reemplazar los valores y poner provisional: false.
 name: Master Solution
 colors:
   primary: "#FFFFFF"
@@ -5,26 +9,75 @@ colors:
   text: "#FFFFFF"
   bg: "#000000"
 fonts:
-  heading: Inter
+  heading: Inter      # fuente libre (OFL) elegida como propuesta, no como tipografía de marca
   body: Inter
 logo: null
 provisional: true
+# Términos que la transcripción debe respetar (initial_prompt) y que el plan puede enfatizar.
 glossary:
+  - Master Solution
   - IA
   - inteligencia artificial
   - automatización
   - automatizar
+  - automatización de procesos
   - procesos
   - flujo de trabajo
+  - flujos de trabajo
   - ChatGPT
   - Claude
+  - Gemini
+  - Copilot
   - agente
+  - agentes de IA
+  - asistente
+  - prompt
+  - prompts
+  - modelo de lenguaje
+  - LLM
+  - RAG
+  - API
+  - webhook
+  - integración
   - CRM
-  - Master Solution
+  - ERP
+  - chatbot
+  - WhatsApp Business
+  - Zapier
+  - Make
+  - n8n
+  - Power Automate
+  - Google Workspace
+  - Microsoft 365
+  - no-code
+  - low-code
+  - machine learning
+  - aprendizaje automático
+  - datos
+  - base de datos
+  - dashboard
+  - KPI
+  - ROI
+  - productividad
+  - capacitación
+  - consultoría
+  - Costa Rica
+# Afirmaciones que ningún texto de gráficos, títulos o subtítulos editoriales puede hacer.
+# El linter las trata como ERROR (regla BRAND).
 forbidden_claims:
   - reemplaza empleados
+  - reemplaza a tus empleados
+  - reemplaza al personal
+  - sustituye al equipo
   - dinero fácil
+  - dinero rápido
+  - ganar dinero sin esfuerzo
   - negocio que funciona solo
+  - negocio en piloto automático
+  - resultados garantizados
 voice_notes: >-
-  Cercana, clara y profesional. La tecnología facilita la vida del equipo; no se presenta la IA
-  como sustitución de empleos ni con promesas de dinero fácil.
+  Cercana, clara y profesional, con voseo costarricense natural. La tecnología facilita la vida
+  del equipo: se habla de ahorrar tiempo en tareas repetitivas, no de reducir personal. Público:
+  dueños, gerentes y responsables de empresas de unos 20 colaboradores o más. Sin promesas de
+  dinero fácil ni de un negocio que funciona solo. Las cifras son reales o están marcadas como
+  ejemplo. Sin tecnicismos innecesarios: si aparece un término de IA, se explica en una frase.

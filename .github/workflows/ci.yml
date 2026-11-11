@@ -5,22 +5,57 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
+    name: ${{ matrix.os }} · Python ${{ matrix.python }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04, windows-latest]
         python: ["3.11", "3.12"]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v3
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
       - name: FFmpeg
         uses: FedericoCarboni/setup-ffmpeg@v3
+        id: setup-ffmpeg
+
+      - name: Verificar FFmpeg >= 6
+        shell: bash
+        run: |
+          ffmpeg -version | head -n 1
+          major=$(ffmpeg -version | head -n 1 | sed -E 's/^ffmpeg version [nN]?([0-9]+).*/\1/')
+          if ! [ "$major" -ge 6 ] 2>/dev/null; then
+            echo "Se requiere FFmpeg 6 o superior (detectado: '$major')"
+            exit 1
+          fi
+
       - run: uv python install ${{ matrix.python }}
       - run: uv sync --all-extras --python ${{ matrix.python }}
-      - run: uv run playwright install chromium
+
+      - name: Chromium de Playwright
+        run: uv run playwright install --with-deps chromium
+        if: runner.os == 'Linux'
+      - name: Chromium de Playwright
+        run: uv run playwright install chromium
+        if: runner.os != 'Linux'
+
+      - name: Entorno (editoria doctor)
+        run: uv run editoria doctor
+
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run mypy
