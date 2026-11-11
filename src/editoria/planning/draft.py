@@ -147,7 +147,7 @@ class DraftInputs:
             duration=probe.duration_s,
             source_size=(probe.display_width, probe.display_height),
             words=list(transcript.words),
-            segments=sorted(segments, key=lambda s: s.start),
+            segments=infer_roles(sorted(segments, key=lambda s: s.start)),
             cuts=sorted(cuts.cuts) if cuts else [],
             face=ctx.load_face(),
             brand=resources.load_brand(cfg.brand),
@@ -155,6 +155,19 @@ class DraftInputs:
             sfx_manifest=resources.load_sfx_manifest(),
             external_manifest=resources.load_external_manifest(),
         )
+
+
+def infer_roles(segments: list[Segment]) -> list[Segment]:
+    """Provisional roles when the director has not filled any (``analyze`` leaves them empty):
+    first = hook, last = closing, the rest = body. Roles the director set are never touched;
+    the draft notes still ask to review them."""
+    if len(segments) < 3 or any(s.role for s in segments):
+        return segments
+    last = len(segments) - 1
+    return [
+        s.model_copy(update={"role": "hook" if i == 0 else "closing" if i == last else "body"})
+        for i, s in enumerate(segments)
+    ]
 
 
 # ---- pieces ------------------------------------------------------------------------------
