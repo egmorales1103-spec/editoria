@@ -72,7 +72,9 @@ def register(app: typer.Typer) -> None:
                     fail(f"ffmpeg falló durante el render: {exc}")
             ok(f"Video escrito: {path}")
             counts = report.counts()
-            info("QC: " + " · ".join(f"{k}: {v}" for k, v in counts.items()))
+            from editoria.schemas import QC_STATUS_LABEL
+
+            info("QC: " + " · ".join(f"{QC_STATUS_LABEL[k]}: {v}" for k, v in counts.items()))
             if report.has_fail:
                 fail(f"El QC tiene FAIL: revisá {vdir / 'qc' / 'qc.md'}")
             return

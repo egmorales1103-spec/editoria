@@ -143,7 +143,7 @@ class BuildReport:
         return {
             "captions": bool(self.captions),
             "overlays": [o.id for o in self.overlays],
-            "mix": to_data(self.mix) if self.mix else None,
+            "mix": ({**to_data(self.mix), "wav": "audio/mezcla.wav"} if self.mix else None),
             "shots": self.shots,
             "pending": self.pending,
             "findings": [to_data(f) for f in self.findings],
@@ -352,6 +352,16 @@ def propose(ctx: ProjectContext, window: tuple[float, float] | None = None) -> P
     from editoria.policy import has_errors
     from editoria.render import FFmpegRenderer
 
+    for name, cmd in (
+        (PROBE_FILE, "probe"),
+        (TRANSCRIPT_FILE, "transcribe"),
+        (SEGMENTS_FILE, "analyze"),
+    ):
+        if not ctx.analysis(name).exists():
+            raise PipelineError(
+                f"Falta 01_analisis/{name}: ejecutá 'editoria {cmd} {ctx.slug}' antes de "
+                "'propose' (o usá 'editoria run', que hace todo el flujo)."
+            )
     probe = ctx.load_probe()
     win = window or choose_window(ctx, probe.duration_s)
     tools = DefaultPlanTools()
@@ -497,6 +507,11 @@ def run_project(
 
     if not ctx.analysis(PROBE_FILE).exists():
         probe_project(ctx)
+    if not ctx.load_probe().has_audio:
+        raise PipelineError(
+            "El VIDEO_BASE no tiene pista de audio. EditorIA v0.1 necesita la voz original para "
+            "subtítulos, ritmo y mezcla: exportá el video con su audio y creá el proyecto de nuevo."
+        )
     if not ctx.analysis(TRANSCRIPT_FILE).exists():
         transcribe_project(ctx, model=model, backend=backend)
     if not ctx.analysis(SEGMENTS_FILE).exists():
@@ -544,9 +559,13 @@ def register(app: typer.Typer) -> None:
         with command_log(ctx.commands_log):
             try:
                 path = propose(ctx, parse_window(window))
-            except PipelineError as exc:
+            except (PipelineError, FileNotFoundError, ValueError) as exc:
                 fail(str(exc))
         log.ok(f"Propuestas: {path}")
+        log.info(
+            "Siguiente paso: elegí A, B o C (o aceptá la recomendada) y ejecutá "
+            f"'editoria run {slug}' para montar V1."
+        )
 
     @app.command("run")
     def run_cmd(
@@ -559,6 +578,10 @@ def register(app: typer.Typer) -> None:
         with command_log(ctx.commands_log):
             try:
                 msg = run_project(ctx, backend=backend, model=model)
-            except PipelineError as exc:
+            except Exception as exc:
+                # Domain errors of any editoria module carry Spanish, actionable messages.
+                domain = type(exc).__module__.split(".")[0] == "editoria"
+                if not (domain or isinstance(exc, FileNotFoundError | ValueError)):
+                    raise
                 fail(str(exc))
         log.info(msg)

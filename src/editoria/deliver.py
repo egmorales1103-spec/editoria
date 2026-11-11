@@ -17,6 +17,7 @@ from editoria.schemas import (
     QC_STATUS_LABEL,
     AssetEntry,
     EditPlan,
+    Feedback,
     QCReport,
     Transcript,
     read_model,
@@ -27,6 +28,7 @@ from editoria.util.ffmpeg import command_log
 from editoria.util.files import fmt_ts, read_csv_rows, sha256_file, write_csv_rows
 from editoria.util.project import (
     DELIVERED_MARKER,
+    FEEDBACK_FILE,
     PLAN_FILE,
     TRANSCRIPT_FILE,
     VIDEO_FILE,
@@ -153,6 +155,26 @@ def _attributions_md(entries: list[AssetEntry], missing: list[str]) -> str:
         "",
     ]
     return "\n".join(lines)
+
+
+def _feedback_section(ctx: ProjectContext, version: str) -> list[str]:
+    """For V2+: the timed feedback of the previous version that this one answers (P20)."""
+    n = int(version[1:])
+    if n <= 1:
+        return []
+    prev = f"V{n - 1}"
+    fb_path = ctx.version_dir(prev) / FEEDBACK_FILE
+    if not fb_path.exists():
+        return []
+    fb = read_model(fb_path, Feedback)
+    lines = [f"## Feedback de {prev} que atiende esta versión", ""]
+    items = [
+        f"- {fmt_ts(i.t_in)}–{fmt_ts(i.t_out)} · {i.element}: {i.change}"
+        + (f" → {i.desired}" if i.desired else "")
+        for i in fb.items
+    ]
+    lines += items or [f"- {fb.change}"]
+    return [*lines, ""]
 
 
 def deliver(ctx: ProjectContext, version: str, force: bool = False) -> Path:
@@ -293,6 +315,7 @@ def deliver(ctx: ProjectContext, version: str, force: bool = False) -> Path:
         "",
         *(shot_lines or ["- No se usaron tomas generadas."]),
         "",
+        *_feedback_section(ctx, version),
         "## Control de calidad",
         "",
         "- " + " · ".join(f"{QC_STATUS_LABEL[k]}: {v}" for k, v in counts.items()),
@@ -300,8 +323,12 @@ def deliver(ctx: ProjectContext, version: str, force: bool = False) -> Path:
         "",
         "## Créditos",
         "",
-        f"- Límite autorizado: {cfg.budget.limit if cfg.budget.limit is not None else 'sin límite'}"
-        f" {cfg.budget.unit} · consumido: {spent:g} {cfg.budget.unit}.",
+        (
+            f"- Límite autorizado: {cfg.budget.limit:g} {cfg.budget.unit}"
+            if cfg.budget.limit is not None
+            else "- Sin límite autorizado: no se puede gastar ningún crédito"
+        )
+        + f" · consumido: {spent:g} {cfg.budget.unit}.",
         "",
         "## Limitaciones",
         "",

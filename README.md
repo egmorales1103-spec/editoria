@@ -107,6 +107,12 @@ Estructura en [`.claude/`](.claude/) y [arquitectura](docs/arquitectura.md).
 ## Uso sin Claude Code
 
 - **Solo la CLI:** todos los comandos funcionan solos (`uv run editoria --help`). Podés escribir o editar el `plan.yaml` a mano ([formato](.claude/skills/editar-video/references/plan-yaml.md)) y usar `plan lint`, `render`, `qc` y `deliver`.
+- **Ciclo de feedback solo con la CLI** (V1 queda intacta):
+  1. Completá una copia de [`Feedback_V1.md`](templates/docs/Feedback_V1.md) con tiempos.
+  2. `uv run editoria feedback parse mi-video mi-feedback.md --version V1`
+  3. `uv run editoria version new mi-video --from V1` copia el plan a `V2/plan.yaml`.
+  4. Editá `04_versiones/V2/plan.yaml` aplicando cada cambio en su tiempo.
+  5. `uv run editoria plan lint mi-video --version V2`, luego `render mi-video --version V2` y `deliver mi-video --version V2`. El `resumen.md` de V2 lista el feedback que atiende.
 - **Solo un chat de IA, sin herramientas:** el [prompt maestro](prompts/prompt-maestro.md) sirve para planificar la edición y preparar instrucciones. No opera editores ni genera video por sí solo. Guía en [docs/uso-con-chat.md](docs/uso-con-chat.md).
 
 ## Políticas
@@ -119,7 +125,7 @@ Son **opcionales** y se manejan en modo manual asistido: `shots pack` prepara el
 
 ## Limitaciones honestas
 
-- **La estética no compite con un editor humano.** La biblioteca de v0.1 tiene ocho plantillas de gráficos y tres estilos. El valor está en el sistema: edición reproducible desde un plan, garantías automáticas y un flujo que entrega V1 y se detiene.
+- **La estética no compite con un editor humano.** La biblioteca de v0.1 tiene diez plantillas de gráficos (ocho base y dos opcionales) y tres estilos. El valor está en el sistema: edición reproducible desde un plan, garantías automáticas y un flujo que entrega V1 y se detiene.
 - **No hay verificación automática de identidad, fondo ni sincronía labial.** El QC marca estos puntos como REVISIÓN HUMANA y la deriva del fondo es solo una métrica orientativa.
 - **Higgsfield no está verificado de punta a punta.** No se asegura que un modelo preserve identidad, fondo y labios.
 - **No exporta proyectos de CapCut** ni de otros editores: entrega video, subtítulos, plan, mapa de edición y capas.

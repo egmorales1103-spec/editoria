@@ -93,12 +93,10 @@ def test_parse_time_values() -> None:
 
 
 # ---- parse_feedback on the real template --------------------------------------------------------
-def test_untouched_template_yields_no_items_and_no_text() -> None:
-    fb = parse_feedback(TEMPLATE, "V1")
-    assert fb.version == "V1"
-    assert fb.items == []
-    assert fb.preferred == "" and fb.keep == "" and fb.change == ""
-    assert fb.quick_review == {}
+def test_untouched_template_is_rejected_as_empty() -> None:
+    # An empty feedback must not be saved: it would block the real one (R2 review).
+    with pytest.raises(IngestError, match="vacío"):
+        parse_feedback(TEMPLATE, "V1")
 
 
 def test_completed_template_is_parsed(tmp_path: Path) -> None:

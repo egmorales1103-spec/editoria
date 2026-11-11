@@ -167,7 +167,7 @@ def parse_feedback(md_path: Path, version: str) -> Feedback:
     if _norm(preferred).rstrip(". ") == _PLACEHOLDER_PREFERRED:
         preferred = ""
     table_lines = _section(sections, "cambios por momento") or text.splitlines()
-    return Feedback(
+    feedback = Feedback(
         version=version,
         preferred=preferred,
         keep=_field(general, "quiero conservar"),
@@ -175,6 +175,12 @@ def parse_feedback(md_path: Path, version: str) -> Feedback:
         items=_parse_table(table_lines),
         quick_review=_parse_quick_review(_section(sections, "revision rapida")),
     )
+    if not (feedback.items or feedback.change or feedback.preferred):
+        raise IngestError(
+            "El feedback está vacío: completá al menos una fila de 'Cambios por momento' "
+            "(tiempo, elemento y cambio) o 'Quiero cambiar'."
+        )
+    return feedback
 
 
 def save_feedback(ctx: ProjectContext, feedback: Feedback, *, force: bool = False) -> Path:

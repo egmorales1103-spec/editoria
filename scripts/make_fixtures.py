@@ -336,9 +336,11 @@ def main() -> None:
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT)
     ns = ap.parse_args()
     out = ensure_fixtures(ns.out, force=ns.force)
-    for p in sorted(out.rglob("*")):
-        if p.is_file():
+    files = [p for p in sorted(out.rglob("*")) if p.is_file()]
+    for p in files:
+        if p.suffix != ".png":
             print(p.relative_to(out))
+    print(f"{len(files)} archivos en {out}")
 
 
 if __name__ == "__main__":
