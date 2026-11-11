@@ -12,3 +12,16 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        exclude: ^(uv\.lock|schemas/json/.*)$
+  - repo: local
+    hooks:
+      # Bloquea medios (mp4, mov, gif, jpg, png...) fuera de las rutas permitidas.
+      - id: no-media
+        name: no-media (sin medios de terceros en el repositorio)
+        entry: python .github/hooks/no_media.py
+        language: python
+        types: [file]

@@ -73,7 +73,6 @@ _MUTATING = {
 # Commands where only the destination (last positional argument) is written.
 _COPY_LIKE = {"cp", "copy", "copy-item", "xcopy", "robocopy", "install", "rsync", "cpi"}
 _REDIRECT_RE = re.compile(r"(?:^|[^\w<])(?:\d?>>?|&>>?)\s*(\S+)")
-_SPLIT_RE = re.compile(r"\|\||&&|;|\||\r?\n")
 _EDITORIA_RE = re.compile(
     r"^(?:uv\s+run\s+(?:--\S+\s+)*)?(?:editoria(?:\.exe)?|python\d?\s+-m\s+editoria\S*)\b"
 )
@@ -112,7 +111,7 @@ def protected_reason(raw_path: str, cwd: Path) -> str | None:
             part == VERSIONS_DIR
             and i + 1 < len(parts)
             and _VERSION_RE.match(parts[i + 1])
-            and Path(*parts[: i + 2], DELIVERED_MARKER).exists()
+            and Path(str(PurePosixPath(*parts[: i + 2])), DELIVERED_MARKER).exists()
         ):
             return (
                 f"Bloqueado: la versión {parts[i + 1]} ya fue entregada (tiene {DELIVERED_MARKER}) "
@@ -132,6 +131,8 @@ def _file_tool_reason(tool_input: dict, cwd: Path) -> str | None:
 
 
 def _tokens(segment: str) -> list[str]:
+    # Windows paths use backslashes, which POSIX tokenising would treat as escapes.
+    segment = segment.replace("\\", "/")
     try:
         return shlex.split(segment, posix=True)
     except ValueError:
@@ -189,8 +190,35 @@ def _segment_reason(segment: str, cwd: Path) -> str | None:
     return None
 
 
+def _split_commands(command: str) -> list[str]:
+    """Split a command line on ``;``, ``|``, ``&&``, ``||`` and newlines, outside quotes."""
+    parts: list[str] = []
+    buf: list[str] = []
+    quote: str | None = None
+    i = 0
+    while i < len(command):
+        ch = command[i]
+        if quote:
+            buf.append(ch)
+            if ch == quote:
+                quote = None
+        elif ch in "\"'":
+            quote = ch
+            buf.append(ch)
+        elif ch in (";", "|", "\r", "\n") or command.startswith("&&", i):
+            parts.append("".join(buf))
+            buf = []
+            if command.startswith(("&&", "||"), i):
+                i += 1
+        else:
+            buf.append(ch)
+        i += 1
+    parts.append("".join(buf))
+    return parts
+
+
 def _shell_reason(command: str, cwd: Path) -> str | None:
-    for segment in _SPLIT_RE.split(command):
+    for segment in _split_commands(command):
         reason = _segment_reason(segment, cwd)
         if reason:
             return reason

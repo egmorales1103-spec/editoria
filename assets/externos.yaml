@@ -12,7 +12,7 @@ assets:
     license_url: https://creativecommons.org/licenses/by/4.0/
     author: Google (Noto Emoji)
     source_url: https://fonts.gstatic.com/s/e/notoemoji/latest/1f4a1/512.gif
-    sha256: "b42b175b8aec3388116fd9b0b707134a753d52a91bba17b34ea0729494f10b12"
+    sha256: "b42b175b8aec3388116fd9b0b707134a753d52a91bba17b34ea0729494f10b12"  # pragma: allowlist secret
     attribution: "Emojis animados: Google Noto Emoji — CC BY 4.0. https://googlefonts.github.io/noto-emoji-animation/"
     suggested_use: Bombilla (idea)
   - id: E02
@@ -22,7 +22,7 @@ assets:
     license_url: https://creativecommons.org/licenses/by/4.0/
     author: Google (Noto Emoji)
     source_url: https://fonts.gstatic.com/s/e/notoemoji/latest/1f440/512.gif
-    sha256: "cd74f25ba724237765bc5d481a4a1c20299a4cd85ee8949b78123a0cb729a1b0"
+    sha256: "cd74f25ba724237765bc5d481a4a1c20299a4cd85ee8949b78123a0cb729a1b0"  # pragma: allowlist secret
     attribution: "Emojis animados: Google Noto Emoji — CC BY 4.0. https://googlefonts.github.io/noto-emoji-animation/"
     suggested_use: Ojos (mirar, atención)
   - id: E03
@@ -32,7 +32,7 @@ assets:
     license_url: https://creativecommons.org/licenses/by/4.0/
     author: Google (Noto Emoji)
     source_url: https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.gif
-    sha256: "d8785d856b415fed27d3fafde40cc34bfb2ef9f2bffeecc9cbe7b3428e0f7e3e"
+    sha256: "d8785d856b415fed27d3fafde40cc34bfb2ef9f2bffeecc9cbe7b3428e0f7e3e"  # pragma: allowlist secret
     attribution: "Emojis animados: Google Noto Emoji — CC BY 4.0. https://googlefonts.github.io/noto-emoji-animation/"
     suggested_use: Fuego (énfasis)
   - id: E04
@@ -42,7 +42,7 @@ assets:
     license_url: https://creativecommons.org/licenses/by/4.0/
     author: Google (Noto Emoji)
     source_url: https://fonts.gstatic.com/s/e/notoemoji/latest/1f44f/512.gif
-    sha256: "36a2cd7143f1028f746c470889a1ba6d8b71f073b97f5dbdd1130ee2b000b867"
+    sha256: "36a2cd7143f1028f746c470889a1ba6d8b71f073b97f5dbdd1130ee2b000b867"  # pragma: allowlist secret
     attribution: "Emojis animados: Google Noto Emoji — CC BY 4.0. https://googlefonts.github.io/noto-emoji-animation/"
     suggested_use: Aplauso (logro)
   - id: E05
@@ -52,7 +52,7 @@ assets:
     license_url: https://creativecommons.org/licenses/by/4.0/
     author: Google (Noto Emoji)
     source_url: https://fonts.gstatic.com/s/e/notoemoji/latest/1f389/512.gif
-    sha256: "86879c45175f3901a8676d9b0bb5132c7a98b20a9f40487c21e4c896ce196616"
+    sha256: "86879c45175f3901a8676d9b0bb5132c7a98b20a9f40487c21e4c896ce196616"  # pragma: allowlist secret
     attribution: "Emojis animados: Google Noto Emoji — CC BY 4.0. https://googlefonts.github.io/noto-emoji-animation/"
     suggested_use: Celebración (cierre, resultado)
   - id: E06
@@ -62,7 +62,7 @@ assets:
     license_url: https://creativecommons.org/licenses/by/4.0/
     author: Google (Noto Emoji)
     source_url: https://fonts.gstatic.com/s/e/notoemoji/latest/1f914/512.gif
-    sha256: "cc4b16879b5f7264a37d7000783776b817b2f8f9e8084672c01d0849ab1bd27c"
+    sha256: "cc4b16879b5f7264a37d7000783776b817b2f8f9e8084672c01d0849ab1bd27c"  # pragma: allowlist secret
     attribution: "Emojis animados: Google Noto Emoji — CC BY 4.0. https://googlefonts.github.io/noto-emoji-animation/"
     suggested_use: Pensando (pregunta)
   - id: font/Inter
@@ -72,6 +72,6 @@ assets:
     license_url: https://openfontlicense.org/open-font-license-official-text/
     author: The Inter Project Authors (Rasmus Andersson)
     source_url: https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip
-    sha256: "9883fdd4a49d4fb66bd8177ba6625ef9a64aa45899767dde3d36aa425756b11e"
+    sha256: "9883fdd4a49d4fb66bd8177ba6625ef9a64aa45899767dde3d36aa425756b11e"  # pragma: allowlist secret
     attribution: "Tipografía Inter — SIL Open Font License 1.1. https://github.com/rsms/inter"
     suggested_use: Subtítulos y gráficos (marca provisional)

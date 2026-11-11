@@ -1,6 +1,6 @@
 ---
 name: editar-video
-description: Edita un video corto vertical (Reels, TikTok, Shorts) con EditorIA a partir de un VIDEO_BASE ya recortado. Usala cuando la persona entregue o mencione un video para editar, pida subtítulos, motion graphics, efectos de sonido, propuestas A/B/C o una V1. Ejecuta el flujo completo init → probe → transcribe → analyze → propose → plan V1 → render → qc → deliver y se detiene tras la V1 pidiendo feedback.
+description: "Edita un video corto vertical (Reels, TikTok, Shorts) con EditorIA a partir de un VIDEO_BASE ya recortado. Usala cuando la persona entregue o mencione un video para editar, pida subtítulos, motion graphics, efectos de sonido, propuestas A/B/C o una V1. Ejecuta el flujo completo init → probe → transcribe → analyze → propose → plan V1 → render → qc → deliver y se detiene tras la V1 pidiendo feedback."
 ---
 
 # Editar un video con EditorIA

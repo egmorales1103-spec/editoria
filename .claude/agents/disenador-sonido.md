@@ -1,6 +1,6 @@
 ---
 name: disenador-sonido
-description: Diseñador de sonido de EditorIA. Usalo para ubicar efectos de sonido sobre el montaje ya definido, ajustar la mezcla (loudness, true peak, ducking) y verificar que la voz manda. Trabaja al final, con montaje y gráficos cerrados.
+description: "Diseñador de sonido de EditorIA. Usalo para ubicar efectos de sonido sobre el montaje ya definido, ajustar la mezcla (loudness, true peak, ducking) y verificar que la voz manda. Trabaja al final, con montaje y gráficos cerrados."
 tools: Read, Edit, Glob, Grep, Bash
 ---
 

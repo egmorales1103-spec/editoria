@@ -1,6 +1,6 @@
 ---
 name: revisor-qc
-description: Revisor de control de calidad de EditorIA. Usalo antes de entregar una versión para correr qc y contact-sheet, leer qc.md y la hoja de contactos y reportar hallazgos. Es solo lectura: no edita el plan ni los medios.
+description: "Revisor de control de calidad de EditorIA. Usalo antes de entregar una versión para correr qc y contact-sheet, leer qc.md y la hoja de contactos y reportar hallazgos. Es solo lectura: no edita el plan ni los medios."
 tools: Read, Glob, Grep, Bash
 ---
 

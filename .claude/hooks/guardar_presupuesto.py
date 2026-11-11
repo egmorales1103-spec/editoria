@@ -21,7 +21,6 @@ import sys
 from pathlib import Path
 
 SHELL_TOOLS = {"Bash", "PowerShell"}
-_SPLIT_RE = re.compile(r"\|\||&&|;|\||\r?\n")
 _SUBMIT_RE = re.compile(r"\bshots\s+api\s+submit\b")
 
 
@@ -94,6 +93,7 @@ def _submit_slug(tokens: list[str]) -> str | None:
 def _segment_reason(segment: str, cwd: Path) -> str | None:
     if not _SUBMIT_RE.search(segment):
         return None
+    segment = segment.replace("\\", "/")  # Windows paths: keep backslashes out of shlex
     try:
         tokens = shlex.split(segment, posix=True)
     except ValueError:
@@ -112,7 +112,7 @@ def _segment_reason(segment: str, cwd: Path) -> str | None:
         )
     try:
         limit, spent = _read_budget(config)
-    except (OSError, ValueError):
+    except Exception:  # unreadable or malformed file: fail closed
         return f"Bloqueado: no pude leer el presupuesto de {config} (regla P09)."
     if limit is None or limit <= 0:
         return (
@@ -128,6 +128,33 @@ def _segment_reason(segment: str, cwd: Path) -> str | None:
     return None
 
 
+def _split_commands(command: str) -> list[str]:
+    """Split a command line on ``;``, ``|``, ``&&``, ``||`` and newlines, outside quotes."""
+    parts: list[str] = []
+    buf: list[str] = []
+    quote: str | None = None
+    i = 0
+    while i < len(command):
+        ch = command[i]
+        if quote:
+            buf.append(ch)
+            if ch == quote:
+                quote = None
+        elif ch in "\"'":
+            quote = ch
+            buf.append(ch)
+        elif ch in (";", "|", "\r", "\n") or command.startswith("&&", i):
+            parts.append("".join(buf))
+            buf = []
+            if command.startswith(("&&", "||"), i):
+                i += 1
+        else:
+            buf.append(ch)
+        i += 1
+    parts.append("".join(buf))
+    return parts
+
+
 def decide(payload: dict) -> str | None:
     """Return a blocking message for the hook payload, or None to allow."""
     if payload.get("tool_name") not in SHELL_TOOLS:
@@ -136,7 +163,7 @@ def decide(payload: dict) -> str | None:
     if not isinstance(command, str):
         return None
     cwd = Path(payload.get("cwd") or ".")
-    for segment in _SPLIT_RE.split(command):
+    for segment in _split_commands(command):
         reason = _segment_reason(segment, cwd)
         if reason:
             return reason

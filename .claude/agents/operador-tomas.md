@@ -1,6 +1,6 @@
 ---
 name: operador-tomas
-description: Operador de tomas complementarias (Higgsfield) en EditorIA. Usalo para preparar paquetes con shots pack, importar resultados, compararlos con el original y proponer un veredicto con evidencia. Nunca gasta créditos sin límite autorizado ni acepta una toma por su cuenta.
+description: "Operador de tomas complementarias (Higgsfield) en EditorIA. Usalo para preparar paquetes con shots pack, importar resultados, compararlos con el original y proponer un veredicto con evidencia. Nunca gasta créditos sin límite autorizado ni acepta una toma por su cuenta."
 tools: Read, Glob, Grep, Bash
 ---
 

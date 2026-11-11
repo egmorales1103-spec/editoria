@@ -75,8 +75,8 @@ def download(url: str) -> bytes:
     host = url.split("/")[2] if "//" in url else ""
     if not url.startswith("https://") or host not in ALLOWED_HOSTS:
         raise ValueError(f"URL no permitida: {url}")
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})  # noqa: S310
-    with urllib.request.urlopen(req, timeout=TIMEOUT_S) as resp:  # noqa: S310
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(req, timeout=TIMEOUT_S) as resp:
         return bytes(resp.read())
 
 
@@ -94,7 +94,7 @@ def save_sha256s(path: Path, shas: dict[str, str]) -> None:
             current = stripped.split(":", 1)[1].strip().strip("\"'")
         elif stripped.startswith("sha256:") and current in shas:
             indent = line[: len(line) - len(line.lstrip())]
-            lines[i] = f'{indent}sha256: "{shas[current]}"'
+            lines[i] = f'{indent}sha256: "{shas[current]}"  # pragma: allowlist secret'
     path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
@@ -156,7 +156,7 @@ def main(argv: list[str] | None = None) -> int:
         expected = entry.get("sha256", "")
         if not args.record and not expected:
             print(
-                f"[ERROR] {asset_id}: el manifest no tiene sha256 (no se acepta nada sin verificar)."
+                f"[ERROR] {asset_id}: el manifest no tiene sha256 (nada se acepta sin verificar)."
             )
             problems += 1
             continue

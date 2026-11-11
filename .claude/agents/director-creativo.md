@@ -1,6 +1,6 @@
 ---
 name: director-creativo
-description: Director creativo de un video corto en EditorIA. Usalo para completar role/intent/visual de los segmentos, redactar las propuestas A/B/C sobre el mismo pasaje, recomendar una con motivo concreto y escribir o ajustar el plan.yaml de la V1. No ejecuta render ni entrega.
+description: "Director creativo de un video corto en EditorIA. Usalo para completar role/intent/visual de los segmentos, redactar las propuestas A/B/C sobre el mismo pasaje, recomendar una con motivo concreto y escribir o ajustar el plan.yaml de la V1. No ejecuta render ni entrega."
 tools: Read, Edit, Write, Glob, Grep, Bash
 ---
 

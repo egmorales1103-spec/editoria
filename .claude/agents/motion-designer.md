@@ -1,6 +1,6 @@
 ---
 name: motion-designer
-description: Diseñador de motion graphics de EditorIA. Usalo para elegir plantillas de gráficos, definir sus parámetros, previsualizarlas con graphics preview y proponer los bloques graphics del plan. No escribe HTML nuevo ni toca el código del motor.
+description: "Diseñador de motion graphics de EditorIA. Usalo para elegir plantillas de gráficos, definir sus parámetros, previsualizarlas con graphics preview y proponer los bloques graphics del plan. No escribe HTML nuevo ni toca el código del motor."
 tools: Read, Edit, Glob, Grep, Bash
 ---
 

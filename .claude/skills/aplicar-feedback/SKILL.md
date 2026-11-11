@@ -1,6 +1,6 @@
 ---
 name: aplicar-feedback
-description: Incorpora el feedback de la persona sobre una versión entregada (V1, V2…) de un video editado con EditorIA. Usala cuando la persona responda con cambios por minuto/segundo, complete Feedback_V1.md o pida ajustes de tomas, ritmo, subtítulos, gráficos o sonido. Convierte los comentarios en cambios con ubicación temporal, crea la versión siguiente sin sobrescribir nada, renderiza, hace QC y entrega.
+description: "Incorpora el feedback de la persona sobre una versión entregada (V1, V2…) de un video editado con EditorIA. Usala cuando la persona responda con cambios por minuto/segundo, complete Feedback_V1.md o pida ajustes de tomas, ritmo, subtítulos, gráficos o sonido. Convierte los comentarios en cambios con ubicación temporal, crea la versión siguiente sin sobrescribir nada, renderiza, hace QC y entrega."
 ---
 
 # Aplicar feedback y crear la versión siguiente

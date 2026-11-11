@@ -1,0 +1,46 @@
+name: Estilo nuevo o cambio de estilo
+description: Proponer un estilo de edición o ajustar A, B o C.
+labels: ["estilo"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Los estilos viven en `styles/` y se describen con patrones de edición en **texto** (ver `references/patrones.yaml`). No adjuntes videos, capturas ni enlaces a publicaciones de terceros, ni nombres de sus autores. En v0.1 el esquema solo admite los identificadores A, B y C.
+  - type: input
+    id: nombre
+    attributes:
+      label: Nombre del estilo
+    validations:
+      required: true
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción
+      description: Cómo se ven los subtítulos, los gráficos, el ritmo de reencuadres y el sonido.
+    validations:
+      required: true
+  - type: textarea
+    id: patrones
+    attributes:
+      label: Patrones de edición que lo inspiran
+      description: Describí la técnica en texto (por ejemplo "subtítulo en mayúsculas con una palabra resaltada"). Podés citar IDs de references/patrones.yaml.
+    validations:
+      required: true
+  - type: textarea
+    id: valores
+    attributes:
+      label: Valores propuestos
+      description: Palabras por evento, caracteres por línea, máximo de gráficos simultáneos, SFX por 10 s, cadencia de reencuadre, zoom máximo.
+  - type: textarea
+    id: para-quien
+    attributes:
+      label: Para qué tipo de contenido
+  - type: checkboxes
+    id: confirmaciones
+    attributes:
+      label: Confirmaciones
+      options:
+        - label: No adjunto material de terceros ni nombro a sus autores
+          required: true
+        - label: Entiendo que un estilo que satura la pantalla no se acepta
+          required: true
