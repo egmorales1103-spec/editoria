@@ -30,8 +30,13 @@ def defective_dir(fixtures_dir: Path, tmp_path_factory: pytest.TempPathFactory) 
         ]
     )  # fmt: skip
     ffmpeg.run(["-display_rotation", "90", "-i", small, "-c", "copy", out / "rotado.mp4"])
+    # Several damaged regions plus a truncated tail: a single 3 KB hole in the middle could
+    # land on bytes the decoder skips silently (CI failed that way). With +faststart the moov
+    # is up front, so the file still opens and decoding reports errors deterministically.
     data = bytearray((fixtures_dir / "base_1080x1920_30.mp4").read_bytes())
-    mid = len(data) // 2
-    data[mid : mid + 3000] = bytes([0x00, 0xFF]) * 1500
-    (out / "corrupto.mp4").write_bytes(bytes(data))
+    size = len(data)
+    for frac in (0.3, 0.45, 0.6):
+        i = int(size * frac)
+        data[i : i + 3000] = bytes([0x00, 0xFF]) * 1500
+    (out / "corrupto.mp4").write_bytes(bytes(data[: int(size * 0.8)]))
     return out

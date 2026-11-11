@@ -22,6 +22,10 @@ jobs:
         python: ["3.11", "3.12"]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
+    env:
+      # Without this, `uv run` follows .python-version (3.12) and rebuilds the venv
+      # without extras in the 3.11 jobs ("Failed to spawn: playwright").
+      UV_PYTHON: ${{ matrix.python }}
     steps:
       - uses: actions/checkout@v4
 
