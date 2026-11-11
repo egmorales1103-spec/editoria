@@ -6,6 +6,7 @@ import json
 import shutil
 from pathlib import Path
 
+from editoria.ingest.probe import probe_file
 from editoria.schemas import (
     Box,
     Canvas,
@@ -17,7 +18,7 @@ from editoria.schemas import (
 )
 from editoria.util.files import make_read_only, sha256_file
 from editoria.util.geometry import zone_box
-from editoria.util.project import FACE_FILE, ProjectContext
+from editoria.util.project import FACE_FILE, PROBE_FILE, ProjectContext
 
 
 def make_project(
@@ -41,6 +42,8 @@ def make_project(
     )
     if face is not None:
         write_model(ctx.analysis(FACE_FILE), face)
+    # probe.json (without it the linter cannot check P04: ERROR); not logged to comandos.jsonl
+    write_model(ctx.analysis(PROBE_FILE), probe_file(ctx.original_video()))
     return ctx
 
 

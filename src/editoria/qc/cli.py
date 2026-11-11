@@ -14,16 +14,29 @@ def register(app: typer.Typer) -> None:
         version: str = typer.Option("V1", "--version"),
     ) -> None:
         """Control de calidad automático (PASS/WARN/FAIL/REVISIÓN HUMANA)."""
+        from editoria.policy.immutable import delivered_message
         from editoria.qc.control import DefaultQualityControl
         from editoria.schemas import QC_STATUS_LABEL
         from editoria.util.ffmpeg import FFmpegError, FFmpegNotFound
         from editoria.util.log import info, ok, warn
 
         ctx = open_project(slug)
+        try:
+            delivered = ctx.is_delivered(version)
+        except ValueError as exc:
+            fail(str(exc))
+        if delivered:
+            fail(delivered_message(version))
         with command_log(ctx.commands_log):
             try:
                 report = DefaultQualityControl().run(ctx, version)
-            except (ValueError, FileNotFoundError, FFmpegNotFound, FFmpegError) as exc:
+            except (
+                ValueError,
+                FileNotFoundError,
+                PermissionError,
+                FFmpegNotFound,
+                FFmpegError,
+            ) as exc:
                 fail(str(exc))
         colors = {"PASS": "green", "WARN": "yellow", "FAIL": "red", "HUMAN": "cyan"}
         for c in report.checks:
