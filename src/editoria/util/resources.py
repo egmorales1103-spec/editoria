@@ -54,6 +54,23 @@ def fonts_dir() -> Path:
     return assets_dir() / "fonts"
 
 
+FONT_SUFFIXES = (".ttf", ".otf", ".ttc")
+
+
+def font_family_dir(family: str) -> Path | None:
+    """Folder to pass as libass ``fontsdir`` for ``family``.
+
+    libass does not scan subfolders, so this returns ``assets/fonts/<family>/`` when it holds
+    font files, else ``assets/fonts/`` if it holds font files directly, else None (system fonts).
+    Every render path (pipeline, ``render``, captions) must use this helper.
+    """
+    root = fonts_dir()
+    for cand in (root / family, root):
+        if cand.is_dir() and any(p.suffix.lower() in FONT_SUFFIXES for p in cand.iterdir()):
+            return cand
+    return None
+
+
 def emoji_dir() -> Path:
     return assets_dir() / "emoji"
 

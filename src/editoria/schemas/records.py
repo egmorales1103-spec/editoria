@@ -121,6 +121,7 @@ class QCReport(Model):
     version: str
     checks: list[QCCheck] = Field(default_factory=list)
     summary: str = ""
+    video_sha256: str = ""  # sha256 of the video.mp4 this report checked (deliver compares it)
 
     def counts(self) -> dict[str, int]:
         out = {k: 0 for k in QC_STATUS_LABEL}
