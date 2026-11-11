@@ -51,8 +51,14 @@ def test_draft_passes_linter(project: ProjectContext, style_id: str) -> None:
 
 
 @pytest.mark.parametrize("style_id", ["A", "B", "C"])
-def test_draft_without_cuts_or_manifests(fixture_project: ProjectContext, style_id: str) -> None:
+def test_draft_without_cuts_or_manifests(
+    fixture_project: ProjectContext, style_id: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """No cortes.json and no SFX manifest: still lint-clean (SFX are omitted with a note)."""
+    from editoria.schemas import AssetManifest
+    from editoria.util import resources
+
+    monkeypatch.setattr(resources, "load_sfx_manifest", lambda: AssetManifest())
     plan = draft_plan(fixture_project, fixture_project.load_style(style_id))
     findings = lint_plan(plan, fixture_project)
     assert not has_errors(findings), findings
