@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from fractions import Fraction
+from itertools import pairwise
 from pathlib import Path
 from statistics import median
 from typing import Any
@@ -35,7 +36,7 @@ def _rotation(stream: dict[str, Any]) -> int:
     if raw is None:
         raw = (stream.get("tags") or {}).get("rotate")
     try:
-        return int(round(float(raw))) % 360 if raw is not None else 0
+        return round(float(raw)) % 360 if raw is not None else 0
     except (TypeError, ValueError):
         return 0
 
@@ -57,7 +58,7 @@ def _frame_gaps_vary(path: Path) -> bool:
         except ValueError:
             continue
     times.sort()
-    gaps = [b - a for a, b in zip(times, times[1:], strict=False) if b - a > 1e-6]
+    gaps = [b - a for a, b in pairwise(times) if b - a > 1e-6]
     if len(gaps) < 3:
         return False
     return max(gaps) > VFR_GAP_FACTOR * median(gaps)

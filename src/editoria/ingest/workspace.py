@@ -80,9 +80,7 @@ def validate_video(video: Path | None) -> Path:
     return path
 
 
-def init_project(
-    video: Path, slug: str, brand: str, base: Path | None = None
-) -> ProjectContext:
+def init_project(video: Path, slug: str, brand: str, base: Path | None = None) -> ProjectContext:
     """Create ``proyectos/<slug>/`` and copy (never move) ``video`` into ``00_original``.
 
     Writes ``video_base.sha256``, marks the copy read-only and writes ``proyecto.yaml``.
