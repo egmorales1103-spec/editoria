@@ -1,0 +1,8 @@
+id: notificacion
+nombre: Notificación
+descripcion: Aviso tipo notificación del sistema, genérico (sin logos ni marcas de terceros).
+size: [880, 300]
+duracion_s: 3.0
+zonas: [upper, middle, center, lower]
+sfx_sugerido: ding
+etiquetas_obligatorias: []

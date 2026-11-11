@@ -1,0 +1,10 @@
+id: ui_demo
+nombre: Demostración de interfaz (ilustración)
+descripcion: >-
+  Ventana genérica con pasos que se resaltan en secuencia. Es una recreación: lleva siempre
+  la etiqueta "Ilustración" y no imita interfaces ni marcas de terceros.
+size: [880, 820]
+duracion_s: 4.5
+zonas: [middle, center, upper, lower]
+sfx_sugerido: click
+etiquetas_obligatorias: [Ilustración]

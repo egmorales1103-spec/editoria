@@ -1,0 +1,63 @@
+{% extends "_base.html" %}
+{% set steps = params.pasos %}
+{% set n = steps|length %}
+{% set t0 = 0.55 %}
+{% set window = [[duration * 0.6, n * 0.75]|min, 0.4]|max %}
+{% set step = window / n %}
+{% set row = 108 %}
+{% block style %}
+.wrap { position: absolute; inset: 0; display: flex; align-items: center; }
+.win { width: 100%; overflow: hidden; animation: fade-up var(--t-in) var(--ease-out) both; }
+.bar {
+  display: flex; align-items: center; gap: 12px; padding: 22px 28px;
+  border-bottom: 1.5px solid var(--hairline); background: color-mix(in srgb, var(--color-text) 5%, transparent);
+}
+.bar i { width: 16px; height: 16px; border-radius: 50%; background: color-mix(in srgb, var(--color-text) 22%, transparent); }
+.bar .name { margin-left: 14px; font: 700 30px/1 var(--font-body); color: var(--muted); flex: 1; }
+.list { position: relative; padding: 26px 28px 30px; display: flex; flex-direction: column; gap: 12px; }
+.hl {
+  position: absolute; left: 28px; right: 28px; top: 26px; height: {{ row - 12 }}px; border-radius: 22px;
+  background: var(--accent-soft); border: 2.5px solid var(--color-accent);
+  animation: hl-move var(--dur) linear both;
+}
+.step {
+  position: relative; height: {{ row - 12 }}px; display: flex; align-items: center; gap: 22px; padding: 0 24px;
+  font: 600 38px/1.15 var(--font-body); animation: fade-up .45s var(--ease-out) both;
+}
+.n {
+  flex: 0 0 auto; width: 54px; height: 54px; border-radius: 16px; display: grid; place-items: center;
+  font: 800 28px/1 var(--font-heading); background: color-mix(in srgb, var(--color-text) 12%, transparent);
+}
+.n.on { position: absolute; left: 24px; background: var(--color-accent); color: var(--color-on-accent); animation: pop-in .3s var(--ease-back) both; }
+.foot { display: flex; justify-content: flex-end; padding: 0 28px 26px; }
+.tag-label { animation: fade-in .3s ease-out .1s both; }
+@keyframes hl-move {
+  0% { opacity: 0; transform: translateY(0); }
+  {% for s in steps %}
+  {% set p = (t0 + loop.index0 * step) / duration * 100 %}
+  {% set q = [(t0 + loop.index0 * step + 0.28) / duration * 100, 100]|min %}
+  {{ '%.3f'|format(p) }}% { opacity: {{ 0 if loop.first else 1 }}; transform: translateY({{ (loop.index0 - (0 if loop.first else 1)) * row }}px); animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
+  {{ '%.3f'|format(q) }}% { opacity: 1; transform: translateY({{ loop.index0 * row }}px); }
+  {% endfor %}
+  100% { opacity: 1; transform: translateY({{ (n - 1) * row }}px); }
+}
+{% endblock %}
+{% block body %}
+<div class="wrap">
+  <div class="win card">
+    <div class="bar"><i></i><i></i><i></i><span class="name">{{ params.titulo }}</span></div>
+    <div class="list">
+      <div class="hl"></div>
+      {% for s in steps %}
+      {% set d = t0 + loop.index0 * step %}
+      <div class="step" style="animation-delay: {{ '%.3f'|format([d - 0.35, 0.15]|max) }}s">
+        <span class="n">{{ loop.index }}</span>
+        <span class="n on" style="animation-delay: {{ '%.3f'|format(d + 0.1) }}s">{{ loop.index }}</span>
+        <span>{{ s }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="foot"><span class="tag-label" data-editoria-label="Ilustración">Ilustración</span></div>
+  </div>
+</div>
+{% endblock %}

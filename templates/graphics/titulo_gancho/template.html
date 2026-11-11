@@ -1,0 +1,37 @@
+{% extends "_base.html" %}
+{% set words = params.texto.split() %}
+{% set n = params.texto|length %}
+{% set fs = 92 if n <= 18 else (80 if n <= 30 else (68 if n <= 48 else 58)) %}
+{% block style %}
+.wrap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.panel {
+  position: relative;
+  width: 100%;
+  padding: 40px 48px 44px 60px;
+  animation: fade-up .5s var(--ease-out) both;
+}
+.panel::before {
+  content: ""; position: absolute; left: 0; top: 46px; bottom: 46px; width: 10px;
+  border-radius: 6px; background: var(--color-accent);
+  transform-origin: top; animation: grow-y .5s var(--ease-out) .05s both;
+}
+.title { font-size: {{ fs }}px; line-height: 1.04; color: var(--color-text); }
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; }
+.w > span { display: inline-block; animation: word-up var(--t-in) var(--ease-out) both; }
+.sub {
+  margin-top: 22px; font: 600 38px/1.2 var(--font-body); color: var(--muted);
+  animation: fade-up .5s var(--ease-out) both;
+  animation-delay: {{ '%.3f'|format(0.25 + words|length * 0.07) }}s;
+}
+@keyframes word-up { from { transform: translateY(105%); } to { transform: none; } }
+@keyframes grow-y { from { transform: scaleY(0); } to { transform: none; } }
+.title, .sub { text-shadow: 0 2px 18px rgba(0,0,0,.45); }
+{% endblock %}
+{% block body %}
+<div class="wrap">
+  <div class="panel card">
+    <h1 class="title heading">{% for word in words %}<span class="w"><span style="animation-delay: {{ '%.3f'|format(0.12 + loop.index0 * 0.07) }}s">{{ word }}</span></span>{% if not loop.last %} {% endif %}{% endfor %}</h1>
+    {% if params.get('subtitulo') %}<p class="sub">{{ params.subtitulo }}</p>{% endif %}
+  </div>
+</div>
+{% endblock %}

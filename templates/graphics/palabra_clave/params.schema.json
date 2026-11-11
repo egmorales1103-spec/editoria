@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "palabra_clave",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["texto"],
+  "properties": {
+    "texto": {"type": "string", "minLength": 1, "maxLength": 28, "description": "Palabra o expresión corta."}
+  },
+  "examples": [{"texto": "Automatizá"}]
+}

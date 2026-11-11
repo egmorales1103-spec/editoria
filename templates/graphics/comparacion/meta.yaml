@@ -1,0 +1,8 @@
+id: comparacion
+nombre: Comparación antes/después
+descripcion: Dos tarjetas lado a lado (antes y después) unidas por una flecha, con título opcional.
+size: [880, 640]
+duracion_s: 3.5
+zonas: [middle, center, upper, lower]
+sfx_sugerido: whoosh
+etiquetas_obligatorias: []

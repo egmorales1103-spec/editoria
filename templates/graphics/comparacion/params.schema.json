@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "comparacion",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["antes", "despues"],
+  "properties": {
+    "antes": {"type": "string", "minLength": 1, "maxLength": 60},
+    "despues": {"type": "string", "minLength": 1, "maxLength": 60},
+    "titulo": {"type": "string", "minLength": 1, "maxLength": 40}
+  },
+  "examples": [
+    {
+      "titulo": "Agendar una cita",
+      "antes": "Llamadas y mensajes a mano",
+      "despues": "Reserva automática en 1 minuto"
+    }
+  ]
+}

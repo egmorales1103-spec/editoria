@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "titulo_gancho",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["texto"],
+  "properties": {
+    "texto": {"type": "string", "minLength": 1, "maxLength": 70, "description": "Frase principal."},
+    "subtitulo": {"type": "string", "minLength": 1, "maxLength": 80, "description": "Línea secundaria opcional."}
+  },
+  "examples": [{"texto": "Tu equipo pierde 5 horas por semana", "subtitulo": "en tareas que se pueden automatizar"}]
+}

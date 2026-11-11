@@ -1,0 +1,48 @@
+{% extends "_base.html" %}
+{% set ax = anchor.x %}
+{% set ay = anchor.y %}
+{% set dx = anchor.dx %}
+{% set dy = anchor.dy %}
+{% set r = 78 %}
+{% set arrow = params.tipo == 'flecha' %}
+{% set reach = 170 if arrow else r + 40 %}
+{% set tx = [[ax + dx * 170, 24]|max, w - 24]|min %}
+{% set ty = [[ay + dy * 170, 24]|max, h - 24]|min %}
+{% set lx = [[ax + dx * (reach + 120), 190]|max, w - 190]|min %}
+{% set ly = [[ay + dy * (reach + 80), 50]|max, h - 50]|min %}
+{% block style %}
+svg { position: absolute; inset: 0; width: var(--w); height: var(--h); overflow: visible; }
+.stroke {
+  fill: none; stroke: var(--color-accent); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.45));
+}
+.draw { stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw .55s var(--ease-out) .1s both; }
+.head { transform-box: fill-box; animation: pop-in .3s var(--ease-back) .5s both; }
+.halo { fill: var(--accent-soft); transform-box: fill-box; transform-origin: center; animation: halo 1.2s var(--ease-out) .45s both; }
+.dot { fill: var(--color-accent); transform-box: fill-box; transform-origin: center; animation: pop-in .35s var(--ease-back) .05s both; }
+.label {
+  position: absolute; left: {{ '%.1f'|format(lx) }}px; top: {{ '%.1f'|format(ly) }}px;
+  transform: translate(-50%, -50%);
+  max-width: 370px; white-space: normal; padding: 16px 24px 18px; border-radius: 22px; text-align: center;
+  background: var(--surface-strong); border: 1.5px solid var(--hairline); box-shadow: var(--shadow);
+  font: 700 34px/1.18 var(--font-body);
+  animation: fade-in .35s ease-out .55s both;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes halo { 0% { opacity: 0; transform: scale(.4); } 30% { opacity: 1; } 100% { opacity: .65; transform: scale(1); } }
+{% endblock %}
+{% block body %}
+<svg viewBox="0 0 {{ w }} {{ h }}">
+{% if arrow %}
+  <circle class="dot" cx="{{ '%.1f'|format(ax) }}" cy="{{ '%.1f'|format(ay) }}" r="9"/>
+  <path class="stroke draw" pathLength="100" d="M {{ '%.1f'|format(tx) }} {{ '%.1f'|format(ty) }} L {{ '%.1f'|format(ax + dx * 30) }} {{ '%.1f'|format(ay + dy * 30) }}"/>
+  <g transform="translate({{ '%.1f'|format(ax + dx * 30) }} {{ '%.1f'|format(ay + dy * 30) }}) rotate({{ anchor.angle }})">
+    <path class="stroke head" d="M -30 -22 L 0 0 L -30 22"/>
+  </g>
+{% else %}
+  <circle class="halo" cx="{{ '%.1f'|format(ax) }}" cy="{{ '%.1f'|format(ay) }}" r="{{ r }}"/>
+  <circle class="stroke draw" pathLength="100" cx="{{ '%.1f'|format(ax) }}" cy="{{ '%.1f'|format(ay) }}" r="{{ r }}" transform="rotate(-100 {{ '%.1f'|format(ax) }} {{ '%.1f'|format(ay) }})"/>
+{% endif %}
+</svg>
+{% if params.get('texto') %}<div class="label">{{ params.texto }}</div>{% endif %}
+{% endblock %}
