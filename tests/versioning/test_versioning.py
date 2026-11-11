@@ -83,7 +83,7 @@ def test_parse_range_accepts_every_supported_format(
 
 @pytest.mark.parametrize("cell", ["", "pronto", "00:75-00:80", "00:20-00:10", "1:2:3:4"])
 def test_parse_range_rejects_nonsense(cell: str) -> None:
-    with pytest.raises(ValueError, match="."):
+    with pytest.raises(ValueError, match=r"."):
         parse_range(cell)
 
 
@@ -268,7 +268,7 @@ def test_p20_new_version_errors(delivered: ProjectContext, tmp_path: Path) -> No
         new_version(delivered, "V1")
     # a version without plan has nothing to copy
     (delivered.version_dir("V1") / "plan.yaml").unlink()
-    with pytest.raises(IngestError, match="no tiene plan.yaml"):
+    with pytest.raises(IngestError, match=r"no tiene plan\.yaml"):
         new_version(delivered, "V1")
 
 

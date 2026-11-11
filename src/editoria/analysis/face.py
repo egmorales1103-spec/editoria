@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import tempfile
 from pathlib import Path
+from typing import Any
 
 from editoria.schemas import Box, FaceSample, FaceTrack
 from editoria.util import ffmpeg
@@ -64,8 +65,9 @@ def detect_faces(video: Path, frame_w: int, frame_h: int, duration: float) -> Fa
         return estimated_track(frame_w, frame_h, duration)
     import cv2
 
-    cascade = cv2.CascadeClassifier(
-        str(Path(cv2.data.haarcascades) / "haarcascade_frontalface_default.xml")
+    cv: Any = cv2  # OpenCV 5 stubs lack the cascade API that opencv_available() verified
+    cascade = cv.CascadeClassifier(
+        str(Path(cv.data.haarcascades) / "haarcascade_frontalface_default.xml")
     )
     if cascade.empty():  # pragma: no cover - broken OpenCV install
         return estimated_track(frame_w, frame_h, duration)
