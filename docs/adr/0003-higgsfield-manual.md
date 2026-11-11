@@ -10,7 +10,7 @@ El flujo original prevé tomas complementarias generadas con Higgsfield (variaci
 ## Decisión
 
 1. **Modo manual asistido por defecto.** `shots pack` prepara el segmento, fotogramas ancla, el prompt con restricciones negativas y los pasos; la persona (o un agente con acceso autorizado) lo ejecuta en la herramienta; `shots import` valida y conforma el resultado; `shots compare` mide la deriva del fondo; `shots verdict` es la **única** vía para aceptar una toma.
-2. **Cliente API experimental, apagado por defecto** (`shots api estimate|submit|status|download`), solo con endpoint y modelo verificados en la documentación oficial durante la sesión de desarrollo, y con presupuesto obligatorio.
+2. **Cliente API experimental, apagado por defecto** (`shots api estimate|submit|status|download`), solo con endpoint y modelo verificados en la documentación oficial durante la sesión de desarrollo, y con presupuesto obligatorio. **Estado en v0.1: no implementado**, porque no se encontró un modelo de video a video verificado ni un endpoint de estimación de costo (ver `docs/higgsfield.md`).
 3. **Presupuesto obligatorio.** Sin `budget.limit` en `proyecto.yaml` no se envía nada. Los gastos se registran en `logs/creditos.jsonl`. Nunca se compran planes ni créditos. Un hook de Claude Code bloquea `shots api submit` sin límite (defensa en profundidad).
 4. **Nada de reintentos automáticos que gasten.** `max_attempts` limita los reintentos manuales.
 5. **El producto funciona completo sin tomas generadas:** una V1 con original y reencuadres se identifica como "sin tomas generadas".
