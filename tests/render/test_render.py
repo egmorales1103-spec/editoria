@@ -186,7 +186,9 @@ def test_delivered_version_is_not_overwritten(version_ctx: ProjectContext) -> No
 
 
 def test_cli_render_and_contact_sheet(version_ctx: ProjectContext) -> None:
-    res = runner.invoke(app, ["render", "demo", "--version", "V1", "--preset", "veryfast"])
+    res = runner.invoke(
+        app, ["render", "demo", "--version", "V1", "--preset", "veryfast", "--solo-componer"]
+    )
     assert res.exit_code == 0, res.output
     vdir = version_ctx.version_dir("V1")
     assert (vdir / "video.mp4").is_file()

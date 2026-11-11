@@ -156,7 +156,14 @@ EXCLUDED_NAMES = [
     "original_" + "name",
 ]
 # CLAUDE.md belongs to the lead and names the excluded kit files to warn about them.
-EXCLUDED_NAMES_ALLOWED_FILES = {"CLAUDE.md"}
+# The P02 guard of `init` refuses videos inside the kit's reference folder by name: it names a
+# folder, it does not ship its content.
+EXCLUDED_NAMES_ALLOWED_FILES = {
+    "CLAUDE.md",
+    "src/editoria/ingest/workspace.py",
+    "tests/ingest/test_ingest_init.py",
+    "docs/modulos/ingesta.md",
+}
 
 
 def test_no_excluded_kit_names_in_tracked_files() -> None:
