@@ -31,7 +31,7 @@ dependencies = [
 [project.optional-dependencies]
 transcribe = ["faster-whisper>=1.0"]
 graphics = ["playwright>=1.45"]
-analyze = ["opencv-python-headless>=4.9"]
+analyze = ["opencv-python-headless>=4.9,<5"]
 
 [project.scripts]
 editoria = "editoria.cli:main"
