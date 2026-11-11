@@ -1,0 +1,187 @@
+assets:
+- id: pop_1
+  path: assets/sfx/pop_1.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: aab12c3782e93bb9c11cdd603c91f118e89f10678ede1469c5decf455eb3d5b4
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Acento corto al aparecer una palabra clave, un ícono o un emoji. (variante 1)
+- id: pop_2
+  path: assets/sfx/pop_2.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: a04d57aae63f26fcf7bfc3d61eb8683cf15b0720f1777e5c9b9e2e3a8fe822c6
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Acento corto al aparecer una palabra clave, un ícono o un emoji. (variante 2)
+- id: pop_3
+  path: assets/sfx/pop_3.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 4a72b043ca303d45f4e0c1fbb9ff6e56de500325f80d6fc8d3e7be101a4d6db9
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Acento corto al aparecer una palabra clave, un ícono o un emoji. (variante 3)
+- id: click_1
+  path: assets/sfx/click_1.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 6171fdd2926a4054846c80aabeb890e306fb9f0717ca846167c870818aa57283
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Acento seco y discreto para ítems de lista, botones o cambios de paso. (variante 1)
+- id: click_2
+  path: assets/sfx/click_2.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: c966645dcc1c30f2c29e7fb638fc427830b19d4b0b52cb315e76752864b26baf
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Acento seco y discreto para ítems de lista, botones o cambios de paso. (variante 2)
+- id: click_3
+  path: assets/sfx/click_3.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 7868d0f634ecfd2b586431177c0ecdbfa1ff91e098156b0d5ae8bd592f74ab00
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Acento seco y discreto para ítems de lista, botones o cambios de paso. (variante 3)
+- id: whoosh_1
+  path: assets/sfx/whoosh_1.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 85435a40d119c506a5c0152dc9d70479b65e606ceca097e2b1652d7e00c26c97
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: 'Movimiento breve: transición entre planos o desplazamiento de un gráfico. (variante
+    1)'
+- id: whoosh_2
+  path: assets/sfx/whoosh_2.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: f528182c93a0ae4dc6e6930706d2f11d4073afdeb614876dfda8bac128fde44a
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: 'Movimiento breve: transición entre planos o desplazamiento de un gráfico. (variante
+    2)'
+- id: whoosh_3
+  path: assets/sfx/whoosh_3.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: d99a7dfb14e32d7ef657bd87b2d49b6b4bb08e1a69058d9bf9081b00d330d9de
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: 'Movimiento breve: transición entre planos o desplazamiento de un gráfico. (variante
+    3)'
+- id: ding_1
+  path: assets/sfx/ding_1.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 6a68545161580f427c93896c4a8d4da40c12e624709146deb6d7ae21078dd3e0
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: 'Confirmación o logro: un resultado, un dato cumplido o un cierre de idea. (variante
+    1)'
+- id: ding_2
+  path: assets/sfx/ding_2.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 9fcbaa230eda63c7e0419018a5a88950cd42a21e3a86e947d2568928f70d95b8
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: 'Confirmación o logro: un resultado, un dato cumplido o un cierre de idea. (variante
+    2)'
+- id: ding_3
+  path: assets/sfx/ding_3.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 8282b20a4e32fc65de3c6b02cf4e5070eb28eca1cf9e986ef554ab3d3d6b51c7
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: 'Confirmación o logro: un resultado, un dato cumplido o un cierre de idea. (variante
+    3)'
+- id: teclado_1
+  path: assets/sfx/teclado_1.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 83c2fbd59ff2b73556700e35148e39d6551da0f27c1a838bd9e7faf9e1db9b73
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Tecleo corto para texto que se escribe, mensajes o ejemplos de uso. (variante 1)
+- id: teclado_2
+  path: assets/sfx/teclado_2.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 2ba351ff95e0b22ebf4ccdf9dd98d7a4a8e852ef603e959e5c3cc2aac9c1cfc1
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Tecleo corto para texto que se escribe, mensajes o ejemplos de uso. (variante 2)
+- id: teclado_3
+  path: assets/sfx/teclado_3.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 17a057b9420091985ae47f2752338ff699b722fbf2ff5543d70f9111c33d5165
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Tecleo corto para texto que se escribe, mensajes o ejemplos de uso. (variante 3)
+- id: impacto_suave_1
+  path: assets/sfx/impacto_suave_1.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 9c40ac60131ad18c1230436a4c70c3aa176b2fced88be33fcd5f4ff4607ce9a8
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Énfasis grave y suave sobre una frase o dato importante (sin golpe duro). (variante 1)
+- id: impacto_suave_2
+  path: assets/sfx/impacto_suave_2.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: d046117a2106640917293b1c72a21eaf9de991c5fe7627bbab9590dd45318439
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Énfasis grave y suave sobre una frase o dato importante (sin golpe duro). (variante 2)
+- id: impacto_suave_3
+  path: assets/sfx/impacto_suave_3.wav
+  kind: sfx
+  license: CC0-1.0
+  license_url: https://creativecommons.org/publicdomain/zero/1.0/
+  author: EditorIA contributors
+  source_url: scripts/gen_sfx.py (síntesis propia, determinística)
+  sha256: 9a66a7212fbfc9c16fb4c567c429a939c098c96e0178ac191ecb7953175c437c
+  attribution: 'No requerida (CC0-1.0). Autoría: EditorIA contributors.'
+  suggested_use: Énfasis grave y suave sobre una frase o dato importante (sin golpe duro). (variante 3)
