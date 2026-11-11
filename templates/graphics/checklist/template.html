@@ -1,0 +1,58 @@
+{% extends "_base.html" %}
+{% set items = params["items"] %}
+{% set n = items|length %}
+{% set t0 = 0.45 if params.get('titulo') else 0.2 %}
+{% set window = [[duration * 0.5, n * 0.55]|min, 0.3]|max %}
+{% set step = window / n %}
+{% block style %}
+.wrap { position: absolute; inset: 0; display: flex; align-items: center; }
+.panel { width: 100%; padding: 44px 48px 46px; animation: fade-up var(--t-in) var(--ease-out) both; }
+.title { font-size: 46px; line-height: 1.1; margin-bottom: 30px; }
+.title::after {
+  content: ""; display: block; width: 72px; height: 6px; border-radius: 4px; margin-top: 18px;
+  background: var(--color-accent); transform-origin: left;
+  animation: grow-x .5s var(--ease-out) .2s both;
+}
+ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 22px; }
+li {
+  display: flex; align-items: center; gap: 24px; font: 600 42px/1.18 var(--font-body);
+  animation: fade-up .5s var(--ease-out) both;
+}
+.box {
+  flex: 0 0 auto; width: 58px; height: 58px; border-radius: 18px;
+  border: 3px solid var(--hairline); position: relative;
+}
+.box .fill {
+  position: absolute; inset: -3px; border-radius: 18px; background: var(--color-accent);
+  animation: pop-in .38s var(--ease-back) both;
+}
+.box svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.box path {
+  fill: none; stroke: var(--color-on-accent); stroke-width: 5.5;
+  stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 40; stroke-dashoffset: 40; animation: draw .34s var(--ease-out) both;
+}
+.label { animation: ink .4s linear both; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes grow-x { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes ink { from { color: var(--muted); } to { color: var(--color-text); } }
+{% endblock %}
+{% block body %}
+<div class="wrap">
+  <div class="panel card">
+    {% if params.get('titulo') %}<h2 class="title heading">{{ params.titulo }}</h2>{% endif %}
+    <ul>
+    {% for it in items %}
+      {% set d = t0 + loop.index0 * step %}
+      <li style="animation-delay: {{ '%.3f'|format(d) }}s">
+        <span class="box">
+          <span class="fill" style="animation-delay: {{ '%.3f'|format(d + 0.18) }}s"></span>
+          <svg viewBox="0 0 58 58"><path d="M16 30 L25.5 39 L42 20" style="animation-delay: {{ '%.3f'|format(d + 0.28) }}s"/></svg>
+        </span>
+        <span class="label" style="animation-delay: {{ '%.3f'|format(d + 0.18) }}s">{{ it }}</span>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

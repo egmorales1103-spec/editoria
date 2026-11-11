@@ -1,0 +1,8 @@
+id: palabra_clave
+nombre: Palabra clave
+descripcion: Una palabra o expresión corta destacada en una pastilla del color de acento.
+size: [880, 260]
+duracion_s: 1.8
+zonas: [upper, middle, center, lower]
+sfx_sugerido: pop
+etiquetas_obligatorias: []

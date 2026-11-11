@@ -1,0 +1,59 @@
+{% extends "_base.html" %}
+{% set longest = [params.antes|length, params.despues|length]|max %}
+{% set fs = 44 if longest <= 24 else (38 if longest <= 40 else 33) %}
+{% block style %}
+.wrap { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 26px; }
+.title {
+  align-self: center; font-size: 44px; line-height: 1.1; padding: 14px 30px 16px;
+  border-radius: 20px; background: var(--surface-strong); box-shadow: var(--shadow);
+  animation: fade-up .5s var(--ease-out) both;
+}
+.cols { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.side { position: relative; padding: 34px 34px 38px; display: flex; flex-direction: column; gap: 22px; }
+.kicker {
+  display: inline-flex; align-items: center; gap: 12px;
+  font: 800 26px/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase;
+}
+.ico { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; }
+.ico svg { width: 24px; height: 24px; }
+.ico path { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.txt { font: 650 {{ fs }}px/1.18 var(--font-heading); letter-spacing: -.01em; }
+.before { animation: from-left .6s var(--ease-out) .12s both; }
+.before .kicker { color: var(--muted); }
+.before .ico { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
+.before .ico path { stroke: var(--muted); }
+.before .txt { color: color-mix(in srgb, var(--color-text) 72%, transparent); }
+.after {
+  border: 3px solid var(--color-accent);
+  animation: from-right .6s var(--ease-out) .62s both;
+}
+.after .kicker { color: var(--color-accent); }
+.after .ico { background: var(--color-accent); }
+.after .ico path { stroke: var(--color-on-accent); }
+.arrow {
+  position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px;
+  border-radius: 50%; background: var(--color-accent); display: grid; place-items: center;
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-bg) 70%, transparent), var(--shadow);
+  animation: pop-in .4s var(--ease-back) .45s both; z-index: 2;
+}
+.arrow svg { width: 36px; height: 36px; }
+.arrow path { fill: none; stroke: var(--color-on-accent); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes from-left { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
+@keyframes from-right { from { opacity: 0; transform: translateX(40px) scale(.97); } to { opacity: 1; transform: none; } }
+{% endblock %}
+{% block body %}
+<div class="wrap">
+  {% if params.get('titulo') %}<h2 class="title heading">{{ params.titulo }}</h2>{% endif %}
+  <div class="cols">
+    <div class="side before card">
+      <span class="kicker"><span class="ico"><svg viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18"/></svg></span>Antes</span>
+      <p class="txt">{{ params.antes }}</p>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 36 36"><path d="M8 18 H27 M19 10 L27 18 L19 26"/></svg></div>
+    <div class="side after card">
+      <span class="kicker"><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 12.5 L10 17 L19 7"/></svg></span>Después</span>
+      <p class="txt">{{ params.despues }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

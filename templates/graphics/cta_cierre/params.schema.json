@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cta_cierre",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["texto"],
+  "properties": {
+    "texto": {"type": "string", "minLength": 1, "maxLength": 60},
+    "accion": {"type": "string", "minLength": 1, "maxLength": 28}
+  },
+  "examples": [{"texto": "¿Querés ordenar los procesos de tu equipo?", "accion": "Escribinos"}]
+}

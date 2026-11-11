@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ui_demo",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["titulo", "pasos"],
+  "properties": {
+    "titulo": {"type": "string", "minLength": 1, "maxLength": 32},
+    "pasos": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {"type": "string", "minLength": 1, "maxLength": 40}
+    }
+  },
+  "examples": [
+    {
+      "titulo": "Nuevo flujo",
+      "pasos": ["Llega un mensaje", "Se clasifica la consulta", "Se agenda la cita", "Se envía el recordatorio"]
+    }
+  ]
+}

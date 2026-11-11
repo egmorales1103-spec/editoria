@@ -1,0 +1,10 @@
+id: dato_grafico
+nombre: Dato en gráfico
+descripcion: >-
+  Barras o contador animado. 'data_source' es obligatorio; con 'ejemplo' se muestra siempre
+  la etiqueta "Ejemplo" para no presentar cifras inventadas como reales.
+size: [880, 720]
+duracion_s: 3.5
+zonas: [middle, center, upper, lower]
+sfx_sugerido: ding
+etiquetas_obligatorias: []

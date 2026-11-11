@@ -1,0 +1,8 @@
+id: cta_cierre
+nombre: Llamado a la acción de cierre
+descripcion: Frase final con botón de acción opcional (sin enlaces ni promesas de resultados).
+size: [880, 380]
+duracion_s: 3.0
+zonas: [lower, middle, center, upper]
+sfx_sugerido: ding
+etiquetas_obligatorias: []

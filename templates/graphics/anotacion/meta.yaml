@@ -1,0 +1,11 @@
+id: anotacion
+nombre: Anotación
+descripcion: >-
+  Flecha o círculo que señala un punto del lienzo (x, y entre 0 y 1), con texto opcional
+  colocado hacia el centro de la pantalla. Se ubica por coordenadas, no por zona.
+size: [600, 600]
+duracion_s: 2.5
+zonas: [center]
+ubicacion: punto
+sfx_sugerido: click
+etiquetas_obligatorias: []

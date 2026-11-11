@@ -1,0 +1,8 @@
+id: titulo_gancho
+nombre: Título gancho
+descripcion: Frase grande de apertura que aparece palabra por palabra, con barra de acento y subtítulo opcional.
+size: [880, 400]
+duracion_s: 2.8
+zonas: [upper, middle, center, lower]
+sfx_sugerido: whoosh
+etiquetas_obligatorias: []

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "anotacion",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tipo", "x", "y"],
+  "properties": {
+    "tipo": {"enum": ["flecha", "circulo"]},
+    "x": {"type": "number", "minimum": 0, "maximum": 1, "description": "Fracción del ancho del lienzo."},
+    "y": {"type": "number", "minimum": 0, "maximum": 1, "description": "Fracción del alto del lienzo."},
+    "texto": {"type": "string", "minLength": 1, "maxLength": 32}
+  },
+  "examples": [{"tipo": "flecha", "x": 0.72, "y": 0.34, "texto": "Acá se configura"}]
+}

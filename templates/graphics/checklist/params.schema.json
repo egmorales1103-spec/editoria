@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "checklist",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["items"],
+  "properties": {
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {"type": "string", "minLength": 1, "maxLength": 48}
+    },
+    "titulo": {"type": "string", "minLength": 1, "maxLength": 40}
+  },
+  "examples": [
+    {
+      "titulo": "Qué automatizar primero",
+      "items": ["Respuestas frecuentes", "Agenda de citas", "Seguimiento de clientes"]
+    }
+  ]
+}

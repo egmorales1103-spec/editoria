@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dato_grafico",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tipo", "valores", "data_source"],
+  "properties": {
+    "tipo": {"enum": ["barras", "contador"]},
+    "valores": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {"type": "number", "minimum": 0}
+    },
+    "etiquetas": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {"type": "string", "maxLength": 22}
+    },
+    "unidad": {"type": "string", "maxLength": 12},
+    "titulo": {"type": "string", "minLength": 1, "maxLength": 40},
+    "data_source": {
+      "enum": ["real", "ejemplo"],
+      "description": "'real' solo con fuente verificable; 'ejemplo' agrega la etiqueta 'Ejemplo'."
+    }
+  },
+  "if": {"properties": {"tipo": {"const": "contador"}}},
+  "then": {"properties": {"valores": {"maxItems": 3}}},
+  "examples": [
+    {
+      "tipo": "barras",
+      "valores": [40, 75],
+      "etiquetas": ["Antes", "Después"],
+      "unidad": "%",
+      "titulo": "Consultas respondidas en 1 h",
+      "data_source": "ejemplo"
+    }
+  ]
+}

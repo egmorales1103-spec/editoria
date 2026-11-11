@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "notificacion",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["app", "titulo", "texto"],
+  "properties": {
+    "app": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 24,
+      "description": "Nombre genérico (p. ej. 'Agenda', 'Mensajes'); sin marcas de terceros."
+    },
+    "titulo": {"type": "string", "minLength": 1, "maxLength": 44},
+    "texto": {"type": "string", "minLength": 1, "maxLength": 110}
+  },
+  "examples": [
+    {
+      "app": "Agenda",
+      "titulo": "Nueva cita confirmada",
+      "texto": "María reservó para el martes a las 10:00. Recordatorio enviado."
+    }
+  ]
+}

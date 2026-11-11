@@ -1,0 +1,8 @@
+id: checklist
+nombre: Lista de verificación
+descripcion: Tarjeta con 1 a 5 ítems que se van marcando uno por uno.
+size: [880, 720]
+duracion_s: 4.0
+zonas: [middle, center, upper, lower]
+sfx_sugerido: click
+etiquetas_obligatorias: []
