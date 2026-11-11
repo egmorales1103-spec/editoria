@@ -7,9 +7,22 @@ import sys
 from functools import lru_cache
 from pathlib import Path
 
+from editoria.schemas import BrandProfile, StylePreset
 from editoria.util import resources
 
 FONT_SUFFIXES = (".ttf", ".otf", ".ttc")
+
+
+def caption_fonts_dir(style: StylePreset | None, brand: BrandProfile | None) -> Path | None:
+    """libass ``fontsdir`` for the captions: the caption font family folder, else the
+    brand's body font folder (``util.resources.font_family_dir``), else None (system fonts).
+    """
+    families = [style.captions.font if style else "", brand.fonts.body if brand else ""]
+    for family in dict.fromkeys(f for f in families if f):
+        found = resources.font_family_dir(family)
+        if found is not None:
+            return found
+    return None
 
 
 def system_fallback_family() -> str:
