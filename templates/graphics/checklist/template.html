@@ -6,24 +6,27 @@
 {% set step = window / n %}
 {% block style %}
 .wrap { position: absolute; inset: 0; display: flex; align-items: center; }
-.panel { width: 100%; padding: 44px 48px 46px; animation: fade-up var(--t-in) var(--ease-out) both; }
-.title { font-size: 46px; line-height: 1.1; margin-bottom: 30px; }
+.panel {
+  width: 100%; padding: calc(44px * var(--k)) calc(48px * var(--k)) calc(46px * var(--k));
+  animation: fade-up var(--t-in) var(--ease-out) both;
+}
+.title { font-size: calc(46px * var(--k)); line-height: 1.1; margin-bottom: calc(30px * var(--k)); }
 .title::after {
-  content: ""; display: block; width: 72px; height: 6px; border-radius: 4px; margin-top: 18px;
+  content: ""; display: block; width: calc(72px * var(--k)); height: 6px; border-radius: 4px; margin-top: calc(18px * var(--k));
   background: var(--color-accent); transform-origin: left;
   animation: grow-x .5s var(--ease-out) .2s both;
 }
-ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 22px; }
+ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(22px * var(--k)); }
 li {
-  display: flex; align-items: center; gap: 24px; font: 600 42px/1.18 var(--font-body);
+  display: flex; align-items: center; gap: calc(24px * var(--k)); font: 600 calc(42px * var(--k))/1.18 var(--font-body);
   animation: fade-up .5s var(--ease-out) both;
 }
 .box {
-  flex: 0 0 auto; width: 58px; height: 58px; border-radius: 18px;
+  flex: 0 0 auto; width: calc(58px * var(--k)); height: calc(58px * var(--k)); border-radius: calc(18px * var(--k));
   border: 3px solid var(--hairline); position: relative;
 }
 .box .fill {
-  position: absolute; inset: -3px; border-radius: 18px; background: var(--color-accent);
+  position: absolute; inset: -3px; border-radius: calc(18px * var(--k)); background: var(--color-accent);
   animation: pop-in .38s var(--ease-back) both;
 }
 .box svg { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -55,4 +58,7 @@ li {
     </ul>
   </div>
 </div>
+{% endblock %}
+{% block script %}
+<script>window.editoriaFit = () => window.editoriaFitTo({target: '.panel'});</script>
 {% endblock %}

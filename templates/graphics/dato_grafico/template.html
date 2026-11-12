@@ -7,35 +7,44 @@
 {% set t0 = 0.45 %}
 {% set grow = [[duration * 0.4, 1.3]|min, 0.4]|max %}
 {% set stagger = 0.12 %}
+{% set lab_fs = 30 if n <= 3 else (26 if n == 4 else 22) %}
 {% macro decimals(v) %}{{ (v|string).split('.')[1]|length if ('.' in (v|string) and not (v|string).endswith('.0')) else 0 }}{% endmacro %}
 {% block style %}
 .wrap { position: absolute; inset: 0; display: flex; align-items: center; }
 .panel {
-  position: relative; width: 100%; padding: 42px 48px 40px;
+  position: relative; width: 100%; padding: calc(42px * var(--k)) calc(48px * var(--k)) calc(40px * var(--k));
   animation: fade-up var(--t-in) var(--ease-out) both;
 }
-.head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; min-height: 44px; margin-bottom: 26px; }
-.title { font-size: 42px; line-height: 1.12; }
+.head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; min-height: calc(44px * var(--k)); margin-bottom: calc(26px * var(--k)); }
+.title { font-size: calc(42px * var(--k)); line-height: 1.12; }
 .tag-label { flex: 0 0 auto; animation: fade-in .3s ease-out .1s both; }
 .num { font-variant-numeric: tabular-nums; }
 /* barras */
 .bars { display: flex; align-items: flex-end; justify-content: center; gap: {{ 40 if n <= 3 else 24 }}px; height: 420px; }
-.col { flex: 1 1 0; max-width: 190px; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; animation: fade-in .3s ease-out both; }
+.col { flex: 1 1 0; min-width: 0; max-width: 190px; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; animation: fade-in .3s ease-out both; }
 .track { flex: 1 1 auto; width: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; min-height: 0; }
-.val { font: 800 46px/1 var(--font-heading); margin-bottom: 16px; }
+.val { max-width: 100%; font: 800 calc(46px * var(--k))/1 var(--font-heading); margin-bottom: calc(16px * var(--k)); }
 .bar {
   width: 100%; border-radius: 22px 22px 8px 8px;
   background: color-mix(in srgb, var(--color-text) 26%, transparent);
   animation: grow-h both var(--ease-out);
 }
 .bar.top { background: var(--color-accent); }
-.lab { margin-top: 18px; font: 600 30px/1.15 var(--font-body); color: var(--muted); text-align: center; }
+.lab {
+  max-width: 100%; margin-top: calc(18px * var(--k)); overflow-wrap: anywhere;
+  /* Labels wrap inside their column, so they only shrink a little (never below 90%). */
+  font: 600 calc({{ lab_fs }}px * max(var(--k), .9))/1.15 var(--font-body); color: var(--muted); text-align: center;
+}
 /* contador */
-.counters { display: flex; justify-content: center; gap: 36px; padding: 24px 0 18px; }
-.counter { flex: 1 1 0; text-align: center; animation: fade-up .5s var(--ease-out) both; }
-.big { font: 800 {{ 168 if n == 1 else (112 if n == 2 else 84) }}px/1 var(--font-heading); letter-spacing: -.03em; color: var(--color-accent); }
+.counters { display: flex; justify-content: center; gap: calc(36px * var(--k)); padding: calc(24px * var(--k)) 0 calc(18px * var(--k)); }
+/* The schema allows at most 3 counters; they share the row and may shrink below their text. */
+.counter {
+  flex: 1 1 0; min-width: 0;
+  text-align: center; animation: fade-up .5s var(--ease-out) both;
+}
+.big { font: 800 calc({{ 168 if n == 1 else (112 if n == 2 else 84) }}px * var(--k))/1 var(--font-heading); letter-spacing: -.03em; color: var(--color-accent); }
 .big .u { font-size: .48em; margin-left: .06em; letter-spacing: 0; color: var(--color-text); }
-.counter .lab { margin-top: 18px; font-size: 34px; }
+.counter .lab { font-size: calc(34px * var(--k)); }
 @keyframes grow-h { from { height: 0; } }
 {% endblock %}
 {% block body %}
@@ -91,6 +100,16 @@
     }
   };
   window.editoriaSeek(0);
+  // Fit with the final numbers; numbers must not overflow their column or counter.
+  window.editoriaFit = () => {
+    window.editoriaSeek(1e9);
+    const r = window.editoriaFitTo({
+      target: '.panel',
+      check: () => [...document.querySelectorAll('.val, .big')].every((e) => e.scrollWidth <= e.clientWidth + 1),
+    });
+    window.editoriaSeek(0);
+    return r;
+  };
 })();
 </script>
 {% endblock %}

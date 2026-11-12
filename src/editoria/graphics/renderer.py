@@ -74,6 +74,8 @@ _CHROMIUM_ARGS = [
 ]
 
 _INIT_JS = """() => {
+  window.__editoriaFitResult = null;
+  if (typeof window.editoriaFit === 'function') window.editoriaFit();
   const anims = document.getAnimations();
   for (const a of anims) a.pause();
   window.__editoriaAnims = anims;
@@ -90,6 +92,7 @@ _SEEK_JS = """(t) => {
   window.__editoriaSeek(t);
   return new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() => done(t))));
 }"""
+_FIT_JS = "() => window.__editoriaFitResult || null"
 _FONTS_READY_JS = "() => document.fonts.ready.then(() => document.fonts.size)"
 _LABELS_JS = (
     "() => [...document.querySelectorAll('[data-editoria-label]')]"
@@ -516,6 +519,12 @@ class PlaywrightGraphicsRenderer:
             page.set_content(html, wait_until="load")
             page.evaluate(_FONTS_READY_JS)
             page.evaluate(_INIT_JS)
+            fit = page.evaluate(_FIT_JS)
+            if fit and not fit["fits"]:
+                warn(
+                    f"Plantilla '{template.id}': el contenido no entra en su caja ni con la letra "
+                    f"más chica (x{fit['k']}); se corta. Acortá el texto."
+                )
             labels: list[str] = list(page.evaluate(_LABELS_JS))
             t0 = time.perf_counter()
             step_ms = 1000.0 / float(fps)

@@ -6,25 +6,28 @@
 {% block style %}
 .thread {
   position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
-  gap: 20px; padding: 10px 6px;
+  padding: 10px 6px;
 }
+/* Auto-height wrapper that editoriaFit() measures (a centred flex column hides top overflow). */
+.thread-fit { display: flex; flex-direction: column; gap: calc(20px * var(--k)); }
 .row { display: flex; }
 .row.der { justify-content: flex-end; }
 .bubble {
-  max-width: 74%;
-  padding: 24px 32px 26px;
-  border-radius: 38px;
-  font: 500 40px/1.26 var(--font-body);
+  /* Smaller type lets the bubbles grow wider, so long messages need fewer lines. */
+  max-width: calc(74% + (1 - var(--k)) * 40%);
+  padding: calc(24px * var(--k)) calc(32px * var(--k)) calc(26px * var(--k));
+  border-radius: calc(38px * var(--k));
+  font: 500 calc(40px * var(--k))/1.26 var(--font-body);
   box-shadow: var(--shadow);
   animation: bubble-in .5s var(--ease-back) both;
 }
 .izq .bubble {
   background: var(--surface-strong); color: var(--color-text);
-  border: 1.5px solid var(--hairline); border-bottom-left-radius: 12px; transform-origin: 0% 100%;
+  border: 1.5px solid var(--hairline); border-bottom-left-radius: calc(12px * var(--k)); transform-origin: 0% 100%;
 }
 .der .bubble {
   background: var(--color-accent); color: var(--color-on-accent); font-weight: 600;
-  border-bottom-right-radius: 12px; transform-origin: 100% 100%;
+  border-bottom-right-radius: calc(12px * var(--k)); transform-origin: 100% 100%;
 }
 @keyframes bubble-in {
   from { opacity: 0; transform: scale(.7) translateY(18px); }
@@ -32,11 +35,14 @@
 }
 {% endblock %}
 {% block body %}
-<div class="thread">
+<div class="thread"><div class="thread-fit">
 {% for m in msgs %}
   <div class="row {{ m.lado }}">
     <div class="bubble" style="animation-delay: {{ '%.3f'|format(0.15 + loop.index0 * step) }}s">{{ m.texto }}</div>
   </div>
 {% endfor %}
-</div>
+</div></div>
+{% endblock %}
+{% block script %}
+<script>window.editoriaFit = () => window.editoriaFitTo({target: '.thread-fit', padY: 20});</script>
 {% endblock %}
