@@ -9,3 +9,7 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # OpenCV 5 dropped CascadeClassifier (Haar face detection used by `analyze`).
+      - dependency-name: opencv-python-headless
+        versions: [">=5"]
