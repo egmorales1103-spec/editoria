@@ -311,8 +311,12 @@ class PlaywrightGraphicsRenderer:
     ) -> Placement:
         meta = template.meta
         scale = canvas.width / BASE_CANVAS_WIDTH
-        w = round(meta.width * scale)
-        h = round(meta.height * scale)
+        vw = round(meta.width * scale)  # visible content
+        vh = round(meta.height * scale)
+        bleed = round(meta.bleed * scale)
+        # Rendered image: same rounding as the browser screenshot of the CSS box.
+        w = round(meta.box_width * scale)
+        h = round(meta.box_height * scale)
         if meta.ubicacion == "punto":
             px = float(params["x"]) * canvas.width
             py = float(params["y"]) * canvas.height
@@ -331,8 +335,9 @@ class PlaywrightGraphicsRenderer:
                 f"(admite: {', '.join(meta.zonas)}); se usa '{meta.zonas[0]}'."
             )
             zone = meta.zonas[0]
-        box = zone_box(zone, canvas, w, h)
-        return Placement(Box(x=box.x, y=box.y, w=w, h=h), scale, None)
+        # The zone places the VISIBLE content; the bleed margin extends beyond it.
+        box = zone_box(zone, canvas, vw, vh)
+        return Placement(Box(x=box.x - bleed, y=box.y - bleed, w=w, h=h), scale, None)
 
     def build_html(
         self,
@@ -354,8 +359,9 @@ class PlaywrightGraphicsRenderer:
         html = tpl.render(
             params=params,
             meta=meta,
-            w=meta.width,
-            h=meta.height,
+            w=meta.box_width,
+            h=meta.box_height,
+            bleed=meta.bleed,
             duration=round(duration, 4),
             anchor=anchor or {},
             brand_name=brand.name,
@@ -494,8 +500,8 @@ class PlaywrightGraphicsRenderer:
 
         context = browser.new_context(
             viewport={
-                "width": template.meta.width,
-                "height": template.meta.height,
+                "width": template.meta.box_width,
+                "height": template.meta.box_height,
             },
             device_scale_factor=placement.scale,
             locale="es-AR",

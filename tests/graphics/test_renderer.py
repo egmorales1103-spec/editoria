@@ -25,6 +25,9 @@ from editoria.schemas import BrandProfile, Canvas, GraphicItem
 from editoria.util.geometry import zone_box
 
 FPS = Fraction(30)
+# palabra_clave: 880x260 visible + a transparent bleed on every side for its shadow.
+BLEED = load_template("palabra_clave").meta.bleed
+BOX_W, BOX_H = 880 + 2 * BLEED, 260 + 2 * BLEED
 
 
 def frame_hashes(folder: Path) -> list[str]:
@@ -81,7 +84,7 @@ def test_alpha_channel_has_transparent_pixels(
     )
     mid = Image.open(out_dir / f"{1 + clip.frame_count // 2:05d}.png")
     assert mid.mode == "RGBA"
-    assert mid.size == (clip.w, clip.h) == (880, 260)  # template size, not the canvas
+    assert mid.size == (clip.w, clip.h) == (BOX_W, BOX_H)  # template box, not the canvas
     alpha = mid.getchannel("A")
     lo, hi = alpha.getextrema()
     assert lo == 0 and hi == 255
@@ -228,8 +231,8 @@ def test_zone_placement_uses_geometry(
     clip = renderer.render(
         item("palabra_clave", {"texto": "Hola"}, 0, 0.1, zone="lower"), brand, canvas, FPS, tmp_path
     )
-    box = zone_box("lower", canvas, 880, 260)
-    assert (clip.x, clip.y, clip.w, clip.h) == (box.x, box.y, box.w, box.h)
+    box = zone_box("lower", canvas, 880, 260)  # where the VISIBLE content goes
+    assert (clip.x, clip.y, clip.w, clip.h) == (box.x - BLEED, box.y - BLEED, BOX_W, BOX_H)
 
 
 def test_disallowed_zone_falls_back_with_warning(
@@ -242,7 +245,7 @@ def test_disallowed_zone_falls_back_with_warning(
     clip = renderer.render(
         item("palabra_clave", {"texto": "Hola"}, 0, 0.1, zone="full"), brand, canvas, FPS, tmp_path
     )
-    assert (clip.w, clip.h) == (880, 260)
+    assert (clip.w, clip.h) == (BOX_W, BOX_H)
     assert "no admite la zona 'full'" in " ".join(capsys.readouterr().err.split())
 
 
@@ -271,7 +274,9 @@ def test_canvas_scale(
     clip = renderer.render(
         item("palabra_clave", {"texto": "Hola"}, 0, 0.1), brand, small, FPS, tmp_path
     )
-    assert (clip.w, clip.h) == (round(880 * 720 / 1080), round(260 * 720 / 1080))
+    s = 720 / 1080
+    # Same rounding as the browser screenshot of the CSS box (visible content + bleed).
+    assert (clip.w, clip.h) == (round(BOX_W * s), round(BOX_H * s))
     assert Image.open(tmp_path / "00001.png").size == (clip.w, clip.h)
 
 

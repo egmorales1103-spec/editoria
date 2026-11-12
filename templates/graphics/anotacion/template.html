@@ -8,8 +8,10 @@
 {% set reach = 170 if arrow else r + 40 %}
 {% set tx = [[ax + dx * 170, 24]|max, w - 24]|min %}
 {% set ty = [[ay + dy * 170, 24]|max, h - 24]|min %}
-{% set lx = [[ax + dx * (reach + 120), 190]|max, w - 190]|min %}
-{% set ly = [[ay + dy * (reach + 80), 50]|max, h - 50]|min %}
+{# The label is up to 370px wide (half 185) and 2 lines tall (half ~57); its shadow reaches 36px
+   sideways and 50px down, so these limits keep label + shadow inside the box (no cut edges). #}
+{% set lx = [[ax + dx * (reach + 120), 226]|max, w - 226]|min %}
+{% set ly = [[ay + dy * (reach + 80), 80]|max, h - 110]|min %}
 {% block style %}
 svg { position: absolute; inset: 0; width: var(--w); height: var(--h); overflow: visible; }
 .stroke {

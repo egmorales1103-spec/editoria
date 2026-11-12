@@ -53,7 +53,11 @@ class TemplateMeta(BaseModel):
     id: str
     nombre: str
     descripcion: str = ""
-    size: tuple[int, int]  # CSS px at a 1080-wide canvas
+    size: tuple[int, int]  # visible content, CSS px at a 1080-wide canvas
+    # Transparent margin (CSS px) added on every side of ``size`` so shadows are never cut at
+    # the image edge. The rendered image is ``size + 2*bleed``; the renderer moves it outward so
+    # the visible content lands exactly where the zone puts it.
+    bleed: int = Field(default=0, ge=0)
     duracion_s: float = Field(gt=0)
     zonas: list[Zone] = Field(default_factory=_default_zones)
     sfx_sugerido: str | None = None
@@ -68,6 +72,15 @@ class TemplateMeta(BaseModel):
     @property
     def height(self) -> int:
         return self.size[1]
+
+    @property
+    def box_width(self) -> int:
+        """Rendered image width in CSS px (visible content plus bleed)."""
+        return self.size[0] + 2 * self.bleed
+
+    @property
+    def box_height(self) -> int:
+        return self.size[1] + 2 * self.bleed
 
 
 class GraphicTemplate:

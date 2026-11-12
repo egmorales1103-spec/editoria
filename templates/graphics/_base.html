@@ -9,6 +9,7 @@
 :root {
   --w: {{ w }}px;
   --h: {{ h }}px;
+  --bleed: {{ bleed }}px;
   --dur: {{ duration }}s;
   --t-in: .55s;
   --t-out: .42s;
@@ -20,7 +21,8 @@
   --hairline: color-mix(in srgb, var(--color-text) 12%, transparent);
   --muted: color-mix(in srgb, var(--color-text) 62%, transparent);
   --accent-soft: color-mix(in srgb, var(--color-accent) 18%, transparent);
-  --shadow: 0 18px 48px rgba(0, 0, 0, .34), 0 2px 8px rgba(0, 0, 0, .22);
+  /* Reaches 36px sideways, 50px down, 22px up: it must fit inside --bleed (56px). */
+  --shadow: 0 14px 36px rgba(0, 0, 0, .34), 0 2px 8px rgba(0, 0, 0, .22);
   --radius: 34px;
 }
 * { box-sizing: border-box; }
@@ -44,7 +46,7 @@ h1, h2, h3, p { margin: 0; }
 /* Whole graphic: smooth exit during the last --t-out of the item. */
 .stage {
   position: absolute;
-  inset: 0;
+  inset: var(--bleed);  /* the visible content box; the bleed around it stays transparent */
   animation: editoria-exit var(--t-out) var(--ease-in) calc(var(--dur) - var(--t-out)) both;
 }
 @keyframes editoria-exit {
