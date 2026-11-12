@@ -33,7 +33,7 @@ Lista de enlaces curados que acompañan a los estilos de EditorIA. La fuente de 
 | W19 | Sonido | <https://mixkit.co/free-sound-effects/keyboard/> | R02, R06 | Escritura de una búsqueda, un mensaje o un prompt. |
 | W20 | Sonido | <https://mixkit.co/free-sound-effects/impact/> | R04, R06 | Acento sobre una cifra o una conclusión. |
 | W21 | Tendencias | <https://ads.tiktok.com/creative/creativeCenter/trends> | General | Para consultar tendencias actuales. No hay un ranking verificado de efectos de sonido para Costa Rica. |
-| W22 | Tutorial | <https://www.youtube.com/watch?v=1e-osPtdM7Y> | R02, R05 | Tutorial de edición de videos cortos; es un enlace, no hay video descargado. |
+| W22 | Tutorial | <https://support.google.com/youtube/answer/10059070> | R02, R05 | Guía oficial de YouTube para crear Shorts (formato vertical y edición básica). |
 | W23 | Producción | <https://higgsfield.ai/blog/how-to-edit-videos-with-ai> | R07 | Documentación del proveedor sobre edición con IA; verificar funciones, revisión visual y costos al ejecutar. |
 | W24 | Licencia | <https://googlefonts.github.io/noto-emoji-files/?view=docs> | W12 | Documentación de Noto Emoji; licencia CC BY 4.0 para las animaciones. |
 | W25 | Sonido | <https://www.storycut.com/blog/how-to-add-sound-effects-to-tiktok> | General | Guía sobre usos habituales de efectos en Reels y Shorts; no prueba un ranking de viralidad. |

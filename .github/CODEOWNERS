@@ -1,7 +1,2 @@
-# Dueños del código. Completar con el usuario u organización de GitHub antes de publicar.
-# Formato: <patrón> @usuario-o-organizacion
-#
-# * @[completar: dueño en GitHub]
-# /.claude/ @[completar: dueño en GitHub]
-# /prompts/ @[completar: dueño en GitHub]
-# /LICENSE* @[completar: dueño en GitHub]
+# Dueños del código: revisan los PR que tocan estas rutas.
+* @egmorales1103-spec

@@ -2,7 +2,7 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). El proyecto sigue [versionado semántico](https://semver.org/lang/es/).
 
-## [Sin publicar] — v0.1.0
+## [0.1.0] — 2026-11-11
 
 ### Agregado
 
@@ -21,5 +21,5 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). E
 ### Limitaciones conocidas
 
 - La verificación de identidad, fondo y sincronía labial es humana.
-- Las tomas generadas con Higgsfield son opcionales y manuales; el cliente de API es experimental.
+- Las tomas generadas con Higgsfield son opcionales y manuales; no hay cliente de API en v0.1 (no se verificó un modelo de video a video con estimación de costo).
 - Sin exportación a proyectos de CapCut ni publicación en redes.

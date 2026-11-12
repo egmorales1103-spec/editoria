@@ -1,6 +1,6 @@
 [project]
 name = "editoria"
-version = "0.1.0.dev0"
+version = "0.1.0"
 description = "Edición de reels con IA: una CLI determinística que edita, verifica y entrega, operada por agentes de Claude Code."
 readme = "README.md"
 requires-python = ">=3.11"

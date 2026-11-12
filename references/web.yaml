@@ -111,9 +111,9 @@ referencias:
     nota: Para consultar tendencias actuales. No hay un ranking verificado de efectos de sonido para Costa Rica.
   - id: W22
     categoria: Tutorial
-    url: https://www.youtube.com/watch?v=1e-osPtdM7Y
+    url: https://support.google.com/youtube/answer/10059070
     relacion: [R02, R05]
-    nota: Tutorial de edición de videos cortos; es un enlace, no hay video descargado.
+    nota: Guía oficial de YouTube para crear Shorts (formato vertical y edición básica).
   - id: W23
     categoria: Producción
     url: https://higgsfield.ai/blog/how-to-edit-videos-with-ai
