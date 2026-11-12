@@ -107,6 +107,27 @@ inset: 0` dentro de la plantilla sigue refiriéndose al contenido visible. Las p
 tarjetas usan `bleed: 56`; la sombra estándar (`--shadow`) llega a 36 px a los lados, 50 abajo y
 22 arriba. Si definís una sombra más grande, subí el `bleed` en consecuencia.
 
+**Texto largo: ajuste automático.** La caja de una plantilla tiene tamaño fijo, pero el
+texto que recibe no. Las plantillas con texto libre (`chat_burbujas`, `checklist`,
+`titulo_gancho`, `dato_grafico`) escalan su tipografía y sus espacios con la variable
+`--k` (1 = tamaño de diseño) y el renderer la baja de a 2,5 % hasta que el contenido entra:
+
+```html
+<style> .panel { padding: calc(44px * var(--k)); font-size: calc(42px * var(--k)); } </style>
+{% block script %}
+<script>window.editoriaFit = () => window.editoriaFitTo({target: '.panel'});</script>
+{% endblock %}
+```
+
+`editoriaFitTo({target, padY, check, min})` mide en el navegador real (no estima por
+cantidad de caracteres, así que funciona con cualquier tipografía de marca). `target` debe ser
+un elemento de alto automático dentro de la caja; `check` agrega una condición propia (por
+ejemplo, que un número no se salga de su columna); `min` es la escala mínima (0,55 por
+defecto). El renderer llama a `editoriaFit()` una sola vez, con las fuentes ya cargadas y
+antes del primer cuadro, así que el resultado no cambia entre cuadros ni entre corridas. Con
+el contenido de ejemplo `--k` queda en 1: el diseño normal no se toca. Si ni con la escala
+mínima entra, el renderer avisa («el contenido no entra en su caja») y el texto se corta.
+
 Reglas (las verifican los tests):
 
 - Solo animaciones/transiciones CSS o WAAPI. Prohibidos `setTimeout`, `setInterval`,

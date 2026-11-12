@@ -7,19 +7,19 @@
 .panel {
   position: relative;
   width: 100%;
-  padding: 40px 48px 44px 60px;
+  padding: calc(40px * var(--k)) calc(48px * var(--k)) calc(44px * var(--k)) calc(60px * var(--k));
   animation: fade-up .5s var(--ease-out) both;
 }
 .panel::before {
-  content: ""; position: absolute; left: 0; top: 46px; bottom: 46px; width: 10px;
+  content: ""; position: absolute; left: 0; top: calc(46px * var(--k)); bottom: calc(46px * var(--k)); width: 10px;
   border-radius: 6px; background: var(--color-accent);
   transform-origin: top; animation: grow-y .5s var(--ease-out) .05s both;
 }
-.title { font-size: {{ fs }}px; line-height: 1.04; color: var(--color-text); }
+.title { font-size: calc({{ fs }}px * var(--k)); line-height: 1.04; color: var(--color-text); }
 .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; }
 .w > span { display: inline-block; animation: word-up var(--t-in) var(--ease-out) both; }
 .sub {
-  margin-top: 22px; font: 600 38px/1.2 var(--font-body); color: var(--muted);
+  margin-top: calc(22px * var(--k)); font: 600 calc(38px * var(--k))/1.2 var(--font-body); color: var(--muted);
   animation: fade-up .5s var(--ease-out) both;
   animation-delay: {{ '%.3f'|format(0.25 + words|length * 0.07) }}s;
 }
@@ -34,4 +34,7 @@
     {% if params.get('subtitulo') %}<p class="sub">{{ params.subtitulo }}</p>{% endif %}
   </div>
 </div>
+{% endblock %}
+{% block script %}
+<script>window.editoriaFit = () => window.editoriaFitTo({target: '.panel'});</script>
 {% endblock %}

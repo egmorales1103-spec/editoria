@@ -9,10 +9,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). E
 - Plantillas de gráficos: las sombras de las tarjetas ya no se cortan con un borde recto en el límite de la imagen. Cada plantilla declara un `bleed` (margen transparente) y el contenido visible queda en la misma posición que antes.
 - `comparacion`: el círculo de la flecha ya no toca el texto de las tarjetas (queda a 18 px o más).
 - `anotacion`: la etiqueta y su sombra quedan siempre dentro de la imagen, también con el punto en una esquina.
-
-### Limitaciones conocidas
-
-- `chat_burbujas` y `checklist` no reducen el tamaño de letra con textos muy largos: con el máximo que admite el esquema (por ejemplo 4 mensajes de 120 caracteres) el contenido puede desbordar la plantilla y cortarse.
+- Texto largo: con el máximo que admite el esquema, `chat_burbujas` (4 mensajes de 120 caracteres), `checklist`, `titulo_gancho` y `dato_grafico` se desbordaban y se cortaban (en `dato_grafico` las etiquetas se pisaban y una barra salía de la imagen). Ahora reducen la letra lo necesario para que todo entre; con el contenido de ejemplo no cambian. El renderer avisa si algo no entra ni con la letra más chica.
 
 ## [0.1.0] — 2026-11-11
 

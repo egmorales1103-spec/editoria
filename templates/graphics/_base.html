@@ -10,6 +10,8 @@
   --w: {{ w }}px;
   --h: {{ h }}px;
   --bleed: {{ bleed }}px;
+  /* Text scale (1 = design size). editoriaFitTo() lowers it until the content fits the box. */
+  --k: 1;
   --dur: {{ duration }}s;
   --t-in: .55s;
   --t-out: .42s;
@@ -97,6 +99,33 @@ h1, h2, h3, p { margin: 0; }
 {% block body %}{% endblock %}
 </div>
 <script type="application/json" id="editoria-params">{{ params|tojson }}</script>
+<script>
+/* Fit to box. A template that can receive long text defines
+     window.editoriaFit = () => window.editoriaFitTo({target: '.panel'});
+   and scales its type/spacing with calc(<px> * var(--k)). The renderer calls editoriaFit() once,
+   after the fonts are ready and before the first frame, so the result depends only on layout.
+   Options: target (selector of an auto-height element), padY (px kept free inside the box),
+   check (extra predicate, true when it fits), min (smallest scale, default .55). */
+window.editoriaFitTo = function (opts) {
+  const root = document.documentElement;
+  const stage = document.querySelector('.stage');
+  const target = document.querySelector(opts.target);
+  const availH = stage.clientHeight - (opts.padY || 0);
+  const kMin = opts.min || 0.55;
+  const fits = () => target.offsetHeight <= availH + 0.5
+    && target.scrollWidth <= target.clientWidth + 0.5
+    && (!opts.check || opts.check());
+  let k = 1;
+  let ok = false;
+  for (; k >= kMin - 1e-9; k -= 0.025) {
+    root.style.setProperty('--k', k.toFixed(3));
+    if (fits()) { ok = true; break; }
+  }
+  if (!ok) { k = kMin; root.style.setProperty('--k', kMin.toFixed(3)); }
+  window.__editoriaFitResult = {k: Number(k.toFixed(3)), fits: ok};
+  return window.__editoriaFitResult;
+};
+</script>
 {% block script %}{% endblock %}
 </body>
 </html>
