@@ -2,6 +2,18 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). El proyecto sigue [versionado semántico](https://semver.org/lang/es/).
 
+## [Sin publicar]
+
+### Corregido
+
+- Plantillas de gráficos: las sombras de las tarjetas ya no se cortan con un borde recto en el límite de la imagen. Cada plantilla declara un `bleed` (margen transparente) y el contenido visible queda en la misma posición que antes.
+- `comparacion`: el círculo de la flecha ya no toca el texto de las tarjetas (queda a 18 px o más).
+- `anotacion`: la etiqueta y su sombra quedan siempre dentro de la imagen, también con el punto en una esquina.
+
+### Limitaciones conocidas
+
+- `chat_burbujas` y `checklist` no reducen el tamaño de letra con textos muy largos: con el máximo que admite el esquema (por ejemplo 4 mensajes de 120 caracteres) el contenido puede desbordar la plantilla y cortarse.
+
 ## [0.1.0] — 2026-11-11
 
 ### Agregado

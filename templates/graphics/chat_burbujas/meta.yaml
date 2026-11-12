@@ -2,6 +2,7 @@ id: chat_burbujas
 nombre: Burbujas de chat
 descripcion: Conversación genérica de 1 a 4 mensajes que aparecen en secuencia (sin marcas de terceros).
 size: [880, 780]
+bleed: 56
 duracion_s: 4.5
 zonas: [middle, center, upper, lower]
 sfx_sugerido: pop

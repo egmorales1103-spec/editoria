@@ -8,7 +8,9 @@
   border-radius: 20px; background: var(--surface-strong); box-shadow: var(--shadow);
   animation: fade-up .5s var(--ease-out) both;
 }
-.cols { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+/* The arrow circle (64px + 6px ring each side = 76px) sits in the 44px gap and enters each card
+   by only 16px, leaving >= 18px before the 34px card padding ends: it never touches the text. */
+.cols { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 44px; }
 .side { position: relative; padding: 34px 34px 38px; display: flex; flex-direction: column; gap: 22px; }
 .kicker {
   display: inline-flex; align-items: center; gap: 12px;
@@ -31,12 +33,12 @@
 .after .ico { background: var(--color-accent); }
 .after .ico path { stroke: var(--color-on-accent); }
 .arrow {
-  position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px;
+  position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px;
   border-radius: 50%; background: var(--color-accent); display: grid; place-items: center;
-  box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-bg) 70%, transparent), var(--shadow);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-bg) 70%, transparent), var(--shadow);
   animation: pop-in .4s var(--ease-back) .45s both; z-index: 2;
 }
-.arrow svg { width: 36px; height: 36px; }
+.arrow svg { width: 32px; height: 32px; }
 .arrow path { fill: none; stroke: var(--color-on-accent); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
 @keyframes from-left { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
 @keyframes from-right { from { opacity: 0; transform: translateX(40px) scale(.97); } to { opacity: 1; transform: none; } }

@@ -14,6 +14,7 @@ from editoria.graphics import (
     GraphicsError,
     PlaywrightGraphicsRenderer,
     list_templates,
+    load_template,
     render_plan_graphics,
 )
 from editoria.schemas import (
@@ -83,7 +84,8 @@ def test_render_plan_graphics(project_v1: ProjectContext) -> None:
     assert clips[1].labels == ["Ejemplo"]
     plan = _plan()
     box = zone_box("upper", plan.canvas, 880, 260)
-    assert (clips[0].x, clips[0].y) == (box.x, box.y)
+    bleed = load_template("palabra_clave").meta.bleed  # the box extends outward by the bleed
+    assert (clips[0].x, clips[0].y) == (box.x - bleed, box.y - bleed)
 
     data = json.loads((gdir / "overlays.json").read_text(encoding="utf-8"))
     loaded = [OverlayClip.model_validate(o) for o in data["overlays"]]

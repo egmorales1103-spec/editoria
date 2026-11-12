@@ -94,9 +94,18 @@ completa con sus parámetros de ejemplo): 50–70 ms por cuadro según la planti
 templates/graphics/<id>/
 ├─ template.html         # {% extends "_base.html" %} + bloques style / body / script
 ├─ params.schema.json    # JSON Schema; additionalProperties: false; examples[0] = ejemplo
-└─ meta.yaml             # id, nombre, descripcion, size [w, h], duracion_s, zonas,
+└─ meta.yaml             # id, nombre, descripcion, size [w, h], bleed, duracion_s, zonas,
                          # sfx_sugerido, etiquetas_obligatorias, ubicacion (zona|punto)
 ```
+
+**`size` y `bleed`.** `size` es el contenido visible. `bleed` (px CSS, por defecto 0) es un
+margen transparente que se agrega por los cuatro lados para que las sombras no se corten en
+el borde de la imagen: el PNG mide `size + 2·bleed`. El renderer corre la imagen hacia
+afuera, así el contenido visible queda exactamente donde lo pone la zona. `_base.html` ya
+inscribe `.stage` dentro del margen (`inset: var(--bleed)`), de modo que `position: absolute;
+inset: 0` dentro de la plantilla sigue refiriéndose al contenido visible. Las plantillas con
+tarjetas usan `bleed: 56`; la sombra estándar (`--shadow`) llega a 36 px a los lados, 50 abajo y
+22 arriba. Si definís una sombra más grande, subí el `bleed` en consecuencia.
 
 Reglas (las verifican los tests):
 

@@ -54,7 +54,7 @@ templates/graphics/<id>/
 └─ preview.png            (opcional) vista previa; es el único PNG permitido en el repo
 ```
 
-`meta.yaml` incluye: `id`, `nombre`, `descripcion`, `size: [ancho, alto]` (el tamaño de la plantilla, no del cuadro completo), `duracion_s`, `zonas` permitidas, `sfx_sugerido` y `etiquetas_obligatorias` (por ejemplo "Ejemplo" o "Ilustración").
+`meta.yaml` incluye: `id`, `nombre`, `descripcion`, `size: [ancho, alto]` (el contenido visible, no el cuadro completo), `bleed` (margen transparente para que las sombras no se corten; 56 si la plantilla tiene tarjetas con sombra, ver [docs/modulos/graficos.md](docs/modulos/graficos.md)), `duracion_s`, `zonas` permitidas, `sfx_sugerido` y `etiquetas_obligatorias` (por ejemplo "Ejemplo" o "Ilustración").
 
 Criterios que se revisan:
 
